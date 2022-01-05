@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:tmc/screens/HomePage.dart';
+import 'package:provider/provider.dart';
+import 'package:tmc/LoginAndSignUp/controller/LoginController.dart';
+import 'package:tmc/LoginAndSignUp/screens/LoginPage.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MultiProvider(
+    providers: [
+      Provider<LoginController>(create: (_) => LoginController()),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -11,11 +18,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TMC',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Arvo'),
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }
