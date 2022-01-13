@@ -158,25 +158,16 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   login() async {
+    // if (true) {
     if (_formKey.currentState!.validate()) {
-      print('Entered');
-      // showCustomFlushBar(context, "Logging you In...", 3);
-      // loginData = new LoginData(email: email, password: password);
-      // showCustomFlushBar(context, "Verifying..!!", 2);
-
-      //
-      LoginResponse isAuthorized =
-          await loginController.login(LoginData(email: email, password: password));
-
-      print(isAuthorized.toString());
-      if (isAuthorized != null) {
-        Navigator.of(context).pushAndRemoveUntil(
-            PageRouteBuilder(pageBuilder: (_, __, ___) => new DashBoard()), (route) => false);
-      } else {
-        print('Not Logged IN');
-
-        //   // showCustomFlushBar(context, "Enter Valid Username/Password !", 2);
-      }
+      // LoginResponse isAuthorized =
+      //     await loginController.login(LoginData(email: email, password: password));
+      // if (isAuthorized != null) {
+      Navigator.of(context).pushAndRemoveUntil(
+          PageRouteBuilder(pageBuilder: (_, __, ___) => new DashBoard()), (route) => false);
+      // } else {
+      //   print('Not Logged IN');
+      // }
     } else {
       // showCustomFlushBar(context, "Enter Valid Username/Password !", 2);
     }

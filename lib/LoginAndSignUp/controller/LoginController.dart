@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginData.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginResponse.dart';
 import 'package:tmc/LoginAndSignUp/modals/SignupuData.dart';
 import 'package:tmc/common/SharedPreferencesUtil.dart';
+import 'package:http/http.dart' as http;
 
 class LoginController {
   static final _sharedPref = SharedPref.instance;
@@ -93,30 +95,44 @@ class LoginController {
     bool isAuthorized = false;
 
     try {
-      print('Got here1');
       dio.options.headers['Content-Type'] = 'application/json';
-      dio.options.headers['accept'] = 'application/json';
 
-      var response = await  dio.post(url, data: formData);
+      dio.options.headers['accept'] = 'application/json';
+      String url = "http://localhost:8080/auth/";
+      final queryParameters = {
+        'username': 'Rohan',
+        'password': '12345',
+      };
+      final uri = Uri.http(url, '/login', queryParameters);
+      print('Got here1');
+      final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
+      final response = await http.post(uri, headers: headers);
+
+      // var response = await dio.post(
+      //   url,
+      //   queryParameters: {"username": "Rohan", "password": "12345"},
+      // );
       print('Got here2');
       print(response.statusCode);
-      print(response.data['_id']);
+      print(response.body);
+      // print(response.data['_id']);
 
-      if (response.data['_id'] != null) {
-        print('Got here3');
-        response.data['Email'] = email;
-        response.data['Password'] = password;
-        loginResponse = LoginResponse.getLoginResponseFromHttpResponse(response, email, password);
-        print(loginResponse);
-        print('Got here4');
-        // _sharedPref.saveIsLoggedIn(true);
-        // _sharedPref.saveUser(json.encode(response.data));
-        isAuthorized = true;
-      }
+      // if (response.data['_id'] != null) {
+      //   print('Got here3');
+      //   response.data['Email'] = email;
+      //   response.data['Password'] = password;
+      //   loginResponse = LoginResponse.getLoginResponseFromHttpResponse(response, email, password);
+      //   print(loginResponse);
+      //   print('Got here4');
+      //   // _sharedPref.saveIsLoggedIn(true);
+      //   // _sharedPref.saveUser(json.encode(response.data));
+      //   isAuthorized = true;
+      // }
 
       if (isAuthorized) {
         return loginResponse;
       } else {
+        return LoginResponse(id: 'id', email: 'email', password: 'password');
         return null;
       }
     } catch (e) {
