@@ -44,6 +44,11 @@ InputDecoration getInputDecoration(
       labelText: labelText,
       focusColor: bgColor,
       fillColor: _fillColor,
+      errorStyle: TextStyle(
+        fontSize: 14,
+        color: Colors.white,
+        fontFamily: 'Arvo',
+      ),
       // hoverColor: bgColor,
       filled: true,
       alignLabelWithHint: true,

@@ -31,6 +31,8 @@ dependencies:
   dio: ^4.0.1
   shared_preferences: ^2.0.4
   provider: ^6.0.2
+  syncfusion_flutter_datepicker: ^19.4.42
+  jiffy: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +52,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/alert.png
+    - assets/images/red_bell.png
     - assets/images/background.jpg
     - assets/branding/atx_logo.png
     - assets/branding/

@@ -18,6 +18,7 @@ class Overview extends StatefulWidget {
 class _OverviewState extends State<Overview> {
   DataTableSource _data = MyData();
   String? _chosenValue;
+  DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -35,6 +36,18 @@ class _OverviewState extends State<Overview> {
     } else {}
   }
 
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -49,52 +62,57 @@ class _OverviewState extends State<Overview> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-                  decoration: BoxDecoration(
-                      color: statBoxColor,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      border: Border.all(color: darkGrey)),
-                  child: Column(children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("Failed Transaction",
-                          style:
-                              TextStyle(color: bgColor, fontSize: 16, fontWeight: FontWeight.bold)),
-                    ),
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(8, 3, 8, 3),
-                          child: Text(
-                            "C1BCMC - 6969696",
-                            style:
-                                TextStyle(color: Colors.red, decoration: TextDecoration.underline),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(8, 3, 8, 3),
-                          child: Text(
-                            "C1BCMC - 6969696",
-                            style:
-                                TextStyle(color: Colors.red, decoration: TextDecoration.underline),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(8, 3, 8, 3),
-                          child: Text(
-                            "C1BCMC - 6969696",
-                            style:
-                                TextStyle(color: Colors.red, decoration: TextDecoration.underline),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ]),
-                ),
+                // Container(
+                //   padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                //   decoration: BoxDecoration(
+                //       color: statBoxColor,
+                //       borderRadius: BorderRadius.all(Radius.circular(10)),
+                //       border: Border.all(color: darkGrey)),
+                //   child: Column(children: [
+                //     Padding(
+                //       padding: const EdgeInsets.all(8.0),
+                //       child: Text("Failed Transaction",
+                //           style:
+                //               TextStyle(color: bgColor, fontSize: 16, fontWeight: FontWeight.bold)),
+                //     ),
+                //     Column(
+                //       children: [
+                //         Padding(
+                //           padding: const EdgeInsets.fromLTRB(8, 3, 8, 3),
+                //           child: Text(
+                //             "C1BCMC - 6969696",
+                //             style:
+                //                 TextStyle(color: Colors.red, decoration: TextDecoration.underline),
+                //           ),
+                //         ),
+                //         Padding(
+                //           padding: const EdgeInsets.fromLTRB(8, 3, 8, 3),
+                //           child: Text(
+                //             "C1BCMC - 6969696",
+                //             style:
+                //                 TextStyle(color: Colors.red, decoration: TextDecoration.underline),
+                //           ),
+                //         ),
+                //         Padding(
+                //           padding: const EdgeInsets.fromLTRB(8, 3, 8, 3),
+                //           child: Text(
+                //             "C1BCMC - 6969696",
+                //             style:
+                //                 TextStyle(color: Colors.red, decoration: TextDecoration.underline),
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ]),
+                // ),
                 Column(
                   children: [
-                    overviewFigureWidget(failed: false),
+                    overviewFigureWidget(
+                      failed: false,
+                      selectDate: () {
+                        _selectDate(context);
+                      },
+                    ),
                     // filter
                     Container(
                       padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
@@ -144,22 +162,31 @@ class _OverviewState extends State<Overview> {
                 ),
                 Column(
                   children: [
-                    overviewFigureWidget(failed: true),
+                    overviewFigureWidget(
+                      failed: true,
+                      selectDate: () {
+                        _selectDate(context);
+                      },
+                    ),
                     Container(
-                      width: 200,
+                      width: 220,
                       height: 42,
                       child: TextField(
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           alignLabelWithHint: true,
                           contentPadding: EdgeInsets.zero,
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: grey,
-                            size: 18,
+                          hintStyle: TextStyle(overflow: TextOverflow.clip),
+                          prefixIcon: IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.search,
+                              color: Colors.black,
+                              size: 18,
+                            ),
                           ),
                           floatingLabelBehavior: FloatingLabelBehavior.never,
-                          labelText: 'Search Transaction',
+                          labelText: 'Search Transactions',
                           hintText: 'Search Transactions',
                         ),
                       ),
@@ -203,10 +230,12 @@ class _OverviewState extends State<Overview> {
 class overviewFigureWidget extends StatelessWidget {
   const overviewFigureWidget({
     Key? key,
+    required this.selectDate,
     required this.failed,
   }) : super(key: key);
 
   final bool failed;
+  final Function selectDate;
 
   @override
   Widget build(BuildContext context) {
@@ -221,8 +250,30 @@ class overviewFigureWidget extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 3.0),
-                child: Icon(Icons.calendar_today_outlined, size: 30),
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 10.5,
+                      top: 10.5,
+                      child: Icon(
+                        Icons.calendar_today_outlined,
+                        size: 22,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          DateTime selectedDate = DateTime.now();
+                          selectDate();
+                        },
+                        padding: EdgeInsets.zero,
+                        icon: Icon(
+                          Icons.calendar_today_outlined,
+                          size: 22,
+                        )),
+                  ],
+                ),
               ),
             ],
           ),

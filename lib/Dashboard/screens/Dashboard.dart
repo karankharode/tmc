@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tmc/LoginAndSignUp/screens/LoginPage.dart';
-import 'package:tmc/LoginAndSignUp/screens/RegisterPage.dart';
 import 'package:tmc/Notifications/screens/notifications.dart';
 import 'package:tmc/Overview/screens/overview.dart';
 

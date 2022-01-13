@@ -60,10 +60,12 @@ class _RegisterPageState extends State<RegisterPage> {
             opacity: a1.value,
             child: AlertDialog(
               backgroundColor: Colors.transparent,
+              scrollable: true,
+              alignment: Alignment.topCenter,
               elevation: 0,
               contentPadding: EdgeInsets.zero,
               content: Container(
-                height: MediaQuery.of(context).size.height,
+                // height: MediaQuery.of(context).size.height,
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: Container(
@@ -87,7 +89,8 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   doSignUp() async {
-    if (password == confirmPassword) {
+    // if (true) {
+      if (_formKey.currentState!.validate()) {
       // showCustomFlushBar(context, "Logging you In...", 3);
       // loginData = new LoginData(email: email, password: password);
       // showCustomFlushBar(context, "Logging you In...", 3);
@@ -148,7 +151,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 35),
               ),
               Container(
-                width: 260,
+                width: MediaQuery.of(context).size.width / 2.5,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -167,19 +170,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                 vertical: 4,
                               ),
                               child: TextFormField(
-                                // validator: (val) {
-                                //   return RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)').hasMatch(val) ||
-                                //           RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                                //                   r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                                //                   r"{0,253}[a-zA-Z0-9])?)*$")
-                                //               .hasMatch(val)
-                                //       ? null
-                                //       : "Please provide valid number or Email ID";
-                                // },
+                                validator: (val) {
+                                  return val!.isNotEmpty ? null : "Please provide valid username";
+                                },
                                 onChanged: (value) => username = value,
                                 cursorColor: Colors.grey,
                                 focusNode: _emailFieldFocus,
-
                                 style: TextStyle(
                                   color: _emailLabelColor,
                                   fontSize: 18,
@@ -201,12 +197,19 @@ class _RegisterPageState extends State<RegisterPage> {
                                 vertical: 4,
                               ),
                               child: TextFormField(
-                                // validator: (val) {
-                                //   return RegExp("^(?=.{8,32}\$)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*")
-                                //           .hasMatch(val)
-                                //       ? null
-                                //       : "Input Valid Password";
-                                // },
+                                validator: (val) {
+                                  if (val != null) {
+                                    if (val.isEmpty) {
+                                      return "Please enter a valid password";
+                                    } else if (val.length < 8) {
+                                      return "Password must contain 8 characters";
+                                    }
+                                    return RegExp("^(?=.{8,32}\$)(?=.*[a-z])(?=.*[0-9]).*")
+                                            .hasMatch(val)
+                                        ? null
+                                        : "Password must contain a letter, number & symbol";
+                                  }
+                                },
                                 onChanged: (value) => password = value,
                                 cursorColor: Colors.grey,
                                 obscureText: _obscureText,
@@ -239,18 +242,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                 vertical: 4,
                               ),
                               child: TextFormField(
-                                // validator: (val) {
-                                //   return RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)').hasMatch(val) ||
-                                //           RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                                //                   r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                                //                   r"{0,253}[a-zA-Z0-9])?)*$")
-                                //               .hasMatch(val)
-                                //       ? null
-                                //       : "Please provide valid number or Email ID";
-                                // },
+                                validator: (val) {
+                                  return val == username ? null : "Username does not match";
+                                },
                                 onChanged: (value) => confirmUsername = value,
                                 cursorColor: Colors.grey,
-
                                 style: TextStyle(
                                   color: _emailLabelColor,
                                   fontSize: 18,
@@ -272,12 +268,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                 vertical: 4,
                               ),
                               child: TextFormField(
-                                // validator: (val) {
-                                //   return RegExp("^(?=.{8,32}\$)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*")
-                                //           .hasMatch(val)
-                                //       ? null
-                                //       : "Input Valid Password";
-                                // },
+                                validator: (val) {
+                                  return val == password ? null : "Password does not match";
+                                },
                                 onChanged: (value) => confirmPassword = value,
                                 cursorColor: Colors.grey,
                                 obscureText: _obscureText,

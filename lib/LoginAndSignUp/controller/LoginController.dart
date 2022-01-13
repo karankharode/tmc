@@ -39,7 +39,7 @@ class LoginController {
   }
 
   Future<LoginResponse?> login(LoginData loginData) async {
-    const endPointUrl = "https://my-json-server.typicode.com/karankharode/demo/user_login";
+    const endPointUrl = "http://localhost:8080/auth/login";
     final parameters = loginData.getFormData(loginData);
     try {
       LoginResponse? serverMsg = await _httpPostRequest(
@@ -94,7 +94,10 @@ class LoginController {
 
     try {
       print('Got here1');
-      var response = await dio.get(url);
+      dio.options.headers['Content-Type'] = 'application/json';
+      dio.options.headers['accept'] = 'application/json';
+
+      var response = await  dio.post(url, data: formData);
       print('Got here2');
       print(response.statusCode);
       print(response.data['_id']);

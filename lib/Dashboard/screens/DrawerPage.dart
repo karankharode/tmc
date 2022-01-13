@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tmc/Dashboard/widgets/customTile.dart';
+import 'package:tmc/LoginAndSignUp/screens/LoginPage.dart';
 
 class Drawerpage extends StatefulWidget {
   final Function changepage;
@@ -30,7 +31,12 @@ class _DrawerpageState extends State<Drawerpage> {
             onTap: () {
               widget.changepage("notification");
             }),
-        customtile(txt: "Logout", current: widget.currentPage == "logout", onTap: () {}),
+        customtile(
+            txt: "Logout",
+            current: widget.currentPage == "logout",
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+            }),
       ],
     );
   }

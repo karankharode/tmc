@@ -5,12 +5,9 @@ import 'package:tmc/LoginAndSignUp/controller/LoginController.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginData.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginResponse.dart';
 import 'package:tmc/LoginAndSignUp/screens/RegisterPage.dart';
-import 'package:tmc/common/widgets/showCustomFlushbar.dart';
 import 'package:tmc/constants/colors.dart';
 import 'package:tmc/constants/buttonStyles.dart';
 import 'package:tmc/screens/inputDecoration.dart';
-
-import 'package:vector_math/vector_math.dart' as math;
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -162,9 +159,12 @@ class _LoginPageState extends State<LoginPage> {
 
   login() async {
     if (_formKey.currentState!.validate()) {
+      print('Entered');
       // showCustomFlushBar(context, "Logging you In...", 3);
       // loginData = new LoginData(email: email, password: password);
       // showCustomFlushBar(context, "Verifying..!!", 2);
+
+      //
       LoginResponse isAuthorized =
           await loginController.login(LoginData(email: email, password: password));
 
@@ -175,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         print('Not Logged IN');
 
-        // showCustomFlushBar(context, "Enter Valid Username/Password !", 2);
+        //   // showCustomFlushBar(context, "Enter Valid Username/Password !", 2);
       }
     } else {
       // showCustomFlushBar(context, "Enter Valid Username/Password !", 2);
@@ -218,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 35),
               ),
               Container(
-                width: 260,
+                width: MediaQuery.of(context).size.width / 2.5,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -237,19 +237,12 @@ class _LoginPageState extends State<LoginPage> {
                                 vertical: 4,
                               ),
                               child: TextFormField(
-                                // validator: (val) {
-                                //   return RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)').hasMatch(val) ||
-                                //           RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                                //                   r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                                //                   r"{0,253}[a-zA-Z0-9])?)*$")
-                                //               .hasMatch(val)
-                                //       ? null
-                                //       : "Please provide valid number or Email ID";
-                                // },
+                                validator: (val) {
+                                  return val!.isNotEmpty ? null : "Please provide valid username";
+                                },
                                 onChanged: (value) => email = value,
                                 cursorColor: Colors.grey,
                                 focusNode: _emailFieldFocus,
-
                                 style: TextStyle(
                                   color: _emailLabelColor,
                                   fontSize: 18,
@@ -272,12 +265,19 @@ class _LoginPageState extends State<LoginPage> {
                                 vertical: 4,
                               ),
                               child: TextFormField(
-                                // validator: (val) {
-                                //   return RegExp("^(?=.{8,32}\$)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*")
-                                //           .hasMatch(val)
-                                //       ? null
-                                //       : "Input Valid Password";
-                                // },
+                                validator: (val) {
+                                  if (val != null) {
+                                    if (val.isEmpty) {
+                                      return "Please enter a valid password";
+                                    } else if (val.length < 8) {
+                                      return "Password must contain 8 characters";
+                                    }
+                                    return RegExp("^(?=.{8,32}\$)(?=.*[a-z])(?=.*[0-9]).*")
+                                            .hasMatch(val)
+                                        ? null
+                                        : "Password must contain a letter, number & symbol";
+                                  }
+                                },
                                 onChanged: (value) => password = value,
                                 cursorColor: Colors.grey,
                                 obscureText: _obscureText,
@@ -343,24 +343,24 @@ class _LoginPageState extends State<LoginPage> {
                             SizedBox(
                               height: 15,
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                showForgotPasswordDialog();
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Forgot Password? ',
-                                    style: TextStyle(color: login_blue),
-                                  ),
-                                  Text(
-                                    'Reset',
-                                    style: TextStyle(color: login_blue),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     showForgotPasswordDialog();
+                            //   },
+                            //   child: Row(
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     children: [
+                            //       Text(
+                            //         'Forgot Password? ',
+                            //         style: TextStyle(color: login_blue),
+                            //       ),
+                            //       Text(
+                            //         'Reset',
+                            //         style: TextStyle(color: login_blue),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

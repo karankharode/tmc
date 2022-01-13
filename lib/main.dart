@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tmc/Dashboard/screens/Dashboard.dart';
 import 'package:tmc/LoginAndSignUp/controller/LoginController.dart';
 import 'package:tmc/LoginAndSignUp/screens/LoginPage.dart';
 
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       title: 'TMC',
       theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Arvo'),
       debugShowCheckedModeBanner: false,
+      // home: DashBoard(),
       home: LoginPage(),
     );
   }

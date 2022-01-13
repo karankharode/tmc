@@ -8,7 +8,7 @@ class LoginData {
 
   FormData getFormData(LoginData loginData) {
     return FormData.fromMap({
-      'email': loginData.email,
+      'username': loginData.email,
       'password': loginData.password,
     });
   }

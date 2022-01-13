@@ -12,14 +12,33 @@ Widget customtile({String txt = "custom", onTap, bool current = false}) {
       child: ListTile(
         //  contentPadding: EdgeInsets.fromLTRB(10, 3, 3, 3),
         tileColor: current ? tableDarkColor : bgColor,
-        title: Text(
-          txt,
-          style: GoogleFonts.ubuntu(
-            fontSize: 15,
-            color: current ? Colors.black : Colors.white,
-            fontWeight: current ? FontWeight.bold : FontWeight.w400,
-          ),
-        ),
+        title: txt == 'Notification'
+            ? Row(
+                children: [
+                  Text(
+                    txt,
+                    style: GoogleFonts.ubuntu(
+                      fontSize: 15,
+                      color: current ? Colors.black : Colors.white,
+                      fontWeight: current ? FontWeight.bold : FontWeight.w400,
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  Image.asset(
+                    'assets/images/red_bell.png',
+                    height: 30,
+                    width: 30,
+                  )
+                ],
+              )
+            : Text(
+                txt,
+                style: GoogleFonts.ubuntu(
+                  fontSize: 15,
+                  color: current ? Colors.black : Colors.white,
+                  fontWeight: current ? FontWeight.bold : FontWeight.w400,
+                ),
+              ),
       ),
     ),
   );
