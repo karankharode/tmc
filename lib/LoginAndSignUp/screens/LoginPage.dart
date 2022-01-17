@@ -19,7 +19,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late double height, width;
 
-  String email = '';
+  String username = '';
 
   String password = '';
 
@@ -158,16 +158,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   login() async {
-    // if (true) {
     if (_formKey.currentState!.validate()) {
-      // LoginResponse isAuthorized =
-      //     await loginController.login(LoginData(email: email, password: password));
-      // if (isAuthorized != null) {
-      Navigator.of(context).pushAndRemoveUntil(
-          PageRouteBuilder(pageBuilder: (_, __, ___) => new DashBoard()), (route) => false);
-      // } else {
-      //   print('Not Logged IN');
-      // }
+      LoginResponse isAuthorized =
+          await loginController.login(LoginData(username: username, password: password));
+      if (isAuthorized != null) {
+        Navigator.of(context).pushAndRemoveUntil(
+            PageRouteBuilder(pageBuilder: (_, __, ___) => new DashBoard()), (route) => false);
+      } else {
+        print('Not Logged IN');
+      }
     } else {
       // showCustomFlushBar(context, "Enter Valid Username/Password !", 2);
     }
@@ -231,7 +230,7 @@ class _LoginPageState extends State<LoginPage> {
                                 validator: (val) {
                                   return val!.isNotEmpty ? null : "Please provide valid username";
                                 },
-                                onChanged: (value) => email = value,
+                                onChanged: (value) => username = value,
                                 cursorColor: Colors.grey,
                                 focusNode: _emailFieldFocus,
                                 style: TextStyle(
@@ -260,13 +259,15 @@ class _LoginPageState extends State<LoginPage> {
                                   if (val != null) {
                                     if (val.isEmpty) {
                                       return "Please enter a valid password";
-                                    } else if (val.length < 8) {
+                                    } else if (val.length < 3) {
                                       return "Password must contain 8 characters";
+                                    } else {
+                                      return null;
                                     }
-                                    return RegExp("^(?=.{8,32}\$)(?=.*[a-z])(?=.*[0-9]).*")
-                                            .hasMatch(val)
-                                        ? null
-                                        : "Password must contain a letter, number & symbol";
+                                    // return RegExp("^(?=.{8,32}\$)(?=.*[a-z])(?=.*[0-9]).*")
+                                    //         .hasMatch(val)
+                                    //     ? null
+                                    //     : "Password must contain a letter, number & symbol";
                                   }
                                 },
                                 onChanged: (value) => password = value,

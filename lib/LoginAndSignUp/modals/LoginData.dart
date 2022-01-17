@@ -1,14 +1,14 @@
 import 'package:dio/dio.dart';
 
 class LoginData {
-  final String email;
+  final String username;
   final String password;
 
-  const LoginData({required this.email, required this.password});
+  const LoginData({required this.username, required this.password});
 
   FormData getFormData(LoginData loginData) {
     return FormData.fromMap({
-      'username': loginData.email,
+      'username': loginData.username,
       'password': loginData.password,
     });
   }

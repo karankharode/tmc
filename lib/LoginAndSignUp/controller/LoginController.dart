@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginData.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginResponse.dart';
 import 'package:tmc/LoginAndSignUp/modals/SignupuData.dart';
@@ -22,12 +23,11 @@ class LoginController {
     return loginResponse;
   }
 
-  Future<String> signup(SignupData signupData) async {
-    const endPointUrl = "";
-    // final parameters = signupData.getFormData(signupData);
+  Future<String> signup(String username, String password) async {
+    const endPointUrl = 'https://atx-tmc.herokuapp.com/auth/register';
 
-    // bool serverMsg = await _httpRequestForSignUp(endPointUrl, parameters);
-    return 'User Created';
+    String serverMsg = await _httpRequestForSignUp(endPointUrl,  username,  password);
+    return serverMsg;
     // return serverMsg;
   }
 
@@ -36,18 +36,18 @@ class LoginController {
     final parameters = loginData.getFormData(loginData);
 
     LoginResponse? serverMsg = await _httpRequestForUserDetails(
-        endPointUrl, parameters, loginData.email, loginData.password);
+        endPointUrl, parameters, loginData.username, loginData.password);
     return serverMsg;
   }
 
   Future<LoginResponse?> login(LoginData loginData) async {
-    const endPointUrl = "http://localhost:8080/auth/login";
+    const endPointUrl = "https://atx-tmc.herokuapp.com/auth/login";
     final parameters = loginData.getFormData(loginData);
     try {
       LoginResponse? serverMsg = await _httpPostRequest(
         endPointUrl,
         parameters,
-        loginData.email,
+        loginData.username,
         loginData.password,
       );
       print(serverMsg.toString());
@@ -90,62 +90,71 @@ class LoginController {
   }
 
   Future<LoginResponse?> _httpPostRequest(
-      String url, FormData formData, String email, String password) async {
+      String url, FormData formData, String username, String password) async {
     LoginResponse? loginResponse;
     bool isAuthorized = false;
 
     try {
+// Set default configs
+      dio.options.baseUrl = 'https://atx-tmc.herokuapp.com/auth/login';
+      dio.options.connectTimeout = 5000; //5s
+      dio.options.receiveTimeout = 3000;
+
+// or new Dio with a BaseOptions instance.
+      var options = BaseOptions(
+        baseUrl: 'https://atx-tmc.herokuapp.com/auth/login',
+        connectTimeout: 5000,
+        receiveTimeout: 3000,
+      );
+      // Dio dio = Dio(options);
+
+      //
       dio.options.headers['Content-Type'] = 'application/json';
-
+      dio.options.headers["Access-Control-Allow-Origin"] = "*";
       dio.options.headers['accept'] = 'application/json';
-      String url = "http://localhost:8080/auth/";
-      final queryParameters = {
-        'username': 'Rohan',
-        'password': '12345',
-      };
-      final uri = Uri.http(url, '/login', queryParameters);
-      print('Got here1');
-      final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
-      final response = await http.post(uri, headers: headers);
 
-      // var response = await dio.post(
-      //   url,
-      //   queryParameters: {"username": "Rohan", "password": "12345"},
-      // );
+      var response = await dio.post(
+        url,
+        data: {"username": username, "password": password},
+      );
       print('Got here2');
       print(response.statusCode);
-      print(response.body);
+      print(response.data);
       // print(response.data['_id']);
 
-      // if (response.data['_id'] != null) {
-      //   print('Got here3');
-      //   response.data['Email'] = email;
-      //   response.data['Password'] = password;
-      //   loginResponse = LoginResponse.getLoginResponseFromHttpResponse(response, email, password);
-      //   print(loginResponse);
-      //   print('Got here4');
-      //   // _sharedPref.saveIsLoggedIn(true);
-      //   // _sharedPref.saveUser(json.encode(response.data));
-      //   isAuthorized = true;
-      // }
-
+      if (response.statusCode == 200) {
+        print('Got here3');
+        loginResponse = LoginResponse.getLoginResponseFromHttpResponse(response);
+        print(loginResponse);
+        print('Got here4');
+        // _sharedPref.saveIsLoggedIn(true);
+        // _sharedPref.saveUser(json.encode(response.data));
+        isAuthorized = true;
+      }
       if (isAuthorized) {
         return loginResponse;
       } else {
-        return LoginResponse(id: 'id', email: 'email', password: 'password');
         return null;
       }
     } catch (e) {
+      print(e);
+
       throw new Exception('Error');
     }
   }
 
-  Future<bool> _httpRequestForSignUp(String url, FormData formData) async {
+  Future<String> _httpRequestForSignUp(
+      String url, String username, String password ) async {
     try {
-      bool result = false;
-      var response = await dio.post(url, data: formData);
-      if (response.data['registerStatus'] == true) {
-        result = true;
+      String result = "Error";
+      var response = await dio.post(url, data: {
+        'username': username,
+        'password': password,
+      });
+      if (response.data['status'] == "Successful registration") {
+        result = "Successful registration";
+      }else if (response.data['status'] == "Username already Exists !") {
+        result = "Username already Exists !";
       }
       return result;
     } catch (e) {

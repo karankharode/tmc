@@ -90,23 +90,20 @@ class _RegisterPageState extends State<RegisterPage> {
 
   doSignUp() async {
     // if (true) {
-      if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate()) {
       // showCustomFlushBar(context, "Logging you In...", 3);
       // loginData = new LoginData(email: email, password: password);
       // showCustomFlushBar(context, "Logging you In...", 3);
-      String isAuthorized = await signUpController.signup(SignupData(
-        username: username,
-        password: password,
-      ));
+      String isAuthorized = await signUpController.signup(username, password);
 
       print(isAuthorized.toString());
       if (isAuthorized != "Error") {
-        if (isAuthorized == "User Created") {
+        if (isAuthorized == "Successful registration") {
           // showCustomFlushBar(context, "User Created :)", 2);
           Navigator.of(context)
               .pushReplacement(PageRouteBuilder(pageBuilder: (_, __, ___) => new LoginPage()));
           showRegisteredDialog();
-        } else if (isAuthorized == "User already exists!") {
+        } else if (isAuthorized == "Username already Exists !") {
           // showCustomFlushBar(context, "User Already Exists!", 2);
         }
       } else {
@@ -201,13 +198,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                   if (val != null) {
                                     if (val.isEmpty) {
                                       return "Please enter a valid password";
-                                    } else if (val.length < 8) {
-                                      return "Password must contain 8 characters";
+                                    } else if (val.length < 3) {
+                                      return "Password must contain 3 characters";
+                                    } else {
+                                      return null;
                                     }
-                                    return RegExp("^(?=.{8,32}\$)(?=.*[a-z])(?=.*[0-9]).*")
-                                            .hasMatch(val)
-                                        ? null
-                                        : "Password must contain a letter, number & symbol";
+                                    // return RegExp("^(?=.{8,32}\$)(?=.*[a-z])(?=.*[0-9]).*")
+                                    //         .hasMatch(val)
+                                    //     ? null
+                                    //     : "Password must contain a letter, number & symbol";
                                   }
                                 },
                                 onChanged: (value) => password = value,
