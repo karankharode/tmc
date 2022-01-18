@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginData.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginResponse.dart';
+import 'package:tmc/constants/colors.dart';
 
 class LoginController {
   final dio = Dio();
@@ -82,14 +83,19 @@ class LoginController {
         'username': username,
         'password': password,
       });
-      print(response.data);
-      if (response.data['status'] == "Successful registration") {
-        result = "Successful registration";
-      } else if (response.data['status'] == "Username already Exists !") {
-        result = "Username already Exists !";
+      try {
+        if (response.data['status'] == "Successful registration") {
+          result = "Successful registration";
+        } else if (response.data['status'] == "Username already Exists !") {
+          result = "Username already Exists !";
+        }
+      } catch (e) {
+        print("error during parsing");
       }
+      print(response.data);
       return result;
     } catch (e) {
+      print('Error during api call');
       return 'Error';
     }
   }

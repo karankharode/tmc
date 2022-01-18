@@ -175,89 +175,88 @@ class _LoginPageState extends State<LoginPage> {
             child: AlertDialog(
               backgroundColor: Colors.transparent,
               elevation: 0,
+              scrollable: true,
+              alignment: Alignment.topCenter,
               contentPadding: EdgeInsets.zero,
-              content: SingleChildScrollView(
-                child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      height: 300,
-                      width: MediaQuery.of(context).size.width / 1.5,
-                      child: Stack(
-                        children: [
-                          Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: alertIconBoxheight / 2),
-                              child: Container(
-                                color: white,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Align(
-                                        alignment: Alignment.topCenter,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.yellow,
-                                            borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(10),
-                                              bottomRight: Radius.circular(10),
-                                            ),
-                                          ),
-                                          height: 10,
-                                        )),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          left: alertIconBoxheight / 2 + 5, bottom: 10),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            heading,
-                                            style: TextStyle(
-                                                color: colorSecondary, fontWeight: FontWeight.w300),
-                                          ),
-                                          Text(text),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
+              content: Container(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    height: 300,
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: alertIconBoxheight / 2),
                             child: Container(
-                              height: alertIconBoxheight,
-                              width: alertIconBoxheight * 2.5,
-                              decoration: BoxDecoration(
-                                color: colorSecondary,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5),
-                                ),
+                              color: white,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.yellow,
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(10),
+                                            bottomRight: Radius.circular(10),
+                                          ),
+                                        ),
+                                        height: 10,
+                                      )),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: alertIconBoxheight / 2 + 5, bottom: 10),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          heading,
+                                          style: TextStyle(
+                                              color: colorSecondary, fontWeight: FontWeight.w300),
+                                        ),
+                                        Text(text),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                              child: Center(
-                                  child: Image.asset(
-                                "assets/images/alert.png",
-                                height: alertIconBoxheight - 5,
-                                width: alertIconBoxheight - 5,
-                              )),
                             ),
                           ),
-                          Align(
-                              alignment: Alignment.centerRight,
-                              child: IconButton(
-                                  icon: Icon(Icons.cancel_outlined, color: Colors.black),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  })),
-                        ],
-                      ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            height: alertIconBoxheight,
+                            width: alertIconBoxheight * 2.5,
+                            decoration: BoxDecoration(
+                              color: colorSecondary,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5),
+                              ),
+                            ),
+                            child: Center(
+                                child: Image.asset(
+                              "assets/images/alert.png",
+                              height: alertIconBoxheight - 5,
+                              width: alertIconBoxheight - 5,
+                            )),
+                          ),
+                        ),
+                        Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                                icon: Icon(Icons.cancel_outlined, color: Colors.black),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                })),
+                      ],
                     ),
                   ),
                 ),
