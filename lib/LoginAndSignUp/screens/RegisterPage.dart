@@ -43,6 +43,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   bool _obscureText = false;
 
+  final double alertIconBoxheight = 40;
+
   showRegisteredDialog() {
     showGeneralDialog(
       context: context,
@@ -88,31 +90,140 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  showCustomAlert(String heading, String text) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, anim1, anim2) {
+        return Container();
+      },
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.4),
+      barrierLabel: '',
+      transitionBuilder: (context, a1, a2, widget) {
+        final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+        return Transform(
+          transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+          child: Opacity(
+            opacity: a1.value,
+            child: AlertDialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              contentPadding: EdgeInsets.zero,
+              content: SingleChildScrollView(
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      height: 300,
+                      width: MediaQuery.of(context).size.width / 1.5,
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: alertIconBoxheight / 2),
+                              child: Container(
+                                color: white,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Align(
+                                        alignment: Alignment.topCenter,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.yellow,
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(10),
+                                              bottomRight: Radius.circular(10),
+                                            ),
+                                          ),
+                                          height: 10,
+                                        )),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: alertIconBoxheight / 2 + 5, bottom: 10),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            heading,
+                                            style: TextStyle(
+                                                color: colorSecondary, fontWeight: FontWeight.w300),
+                                          ),
+                                          Text(text),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              height: alertIconBoxheight,
+                              width: alertIconBoxheight * 2.5,
+                              decoration: BoxDecoration(
+                                color: colorSecondary,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5),
+                                ),
+                              ),
+                              child: Center(
+                                  child: Image.asset(
+                                "assets/images/alert.png",
+                                height: alertIconBoxheight - 5,
+                                width: alertIconBoxheight - 5,
+                              )),
+                            ),
+                          ),
+                          Align(
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                  icon: Icon(Icons.cancel_outlined, color: Colors.black),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  })),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionDuration: Duration(milliseconds: 200),
+    );
+  }
+
   doSignUp() async {
     // if (true) {
     if (_formKey.currentState!.validate()) {
-      // showCustomFlushBar(context, "Logging you In...", 3);
-      // loginData = new LoginData(email: email, password: password);
-      // showCustomFlushBar(context, "Logging you In...", 3);
       String isAuthorized = await signUpController.signup(username, password);
 
       print(isAuthorized.toString());
       if (isAuthorized != "Error") {
         if (isAuthorized == "Successful registration") {
-          // showCustomFlushBar(context, "User Created :)", 2);
           Navigator.of(context)
               .pushReplacement(PageRouteBuilder(pageBuilder: (_, __, ___) => new LoginPage()));
           showRegisteredDialog();
         } else if (isAuthorized == "Username already Exists !") {
-          // showCustomFlushBar(context, "User Already Exists!", 2);
+          showCustomAlert(
+              "Alert - Invalid Registration!", "Uername already exists. Please try again.");
         }
       } else {
-        print('Not Logged IN');
-
-        // showCustomFlushBar(context, "Something went wrong :(", 2);
+        showCustomAlert("Alert - Invalid Registration!", "Unknown error occured!");
       }
     } else {
-      // showCustomFlushBar(context, "Password does not match !", 2);
+      showCustomAlert("Alert - Invalid Registration!",
+          "Uername and password has to be more than 3 characters. Please try again.");
     }
   }
 
@@ -227,7 +338,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                       color: _passwordLabelColor,
                                     ),
                                     IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          setState(() {
+                                            _obscureText = !_obscureText;
+                                          });
+                                        },
                                         icon: Icon(
                                           !_obscureText ? Icons.visibility : Icons.visibility_off,
                                           color: !_obscureText
@@ -287,7 +402,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                       color: _passwordLabelColor,
                                     ),
                                     IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          setState(() {
+                                            _obscureText = !_obscureText;
+                                          });
+                                        },
                                         icon: Icon(
                                           !_obscureText ? Icons.visibility : Icons.visibility_off,
                                           color: !_obscureText

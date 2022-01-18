@@ -178,7 +178,9 @@ class _OverviewState extends State<Overview> {
                           contentPadding: EdgeInsets.zero,
                           hintStyle: TextStyle(overflow: TextOverflow.clip),
                           prefixIcon: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              
+                            },
                             icon: Icon(
                               Icons.search,
                               color: Colors.black,
@@ -246,7 +248,7 @@ class overviewFigureWidget extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                !failed ? "Total Transactions" : "Total Failed Transactions",
+                (!failed) ? "Total Transactions" : "Total Failed Transactions",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Padding(

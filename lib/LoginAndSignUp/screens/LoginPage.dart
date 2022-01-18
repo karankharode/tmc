@@ -157,14 +157,129 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  showCustomAlert(String heading, String text) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, anim1, anim2) {
+        return Container();
+      },
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.4),
+      barrierLabel: '',
+      transitionBuilder: (context, a1, a2, widget) {
+        final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+        return Transform(
+          transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+          child: Opacity(
+            opacity: a1.value,
+            child: AlertDialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              contentPadding: EdgeInsets.zero,
+              content: SingleChildScrollView(
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      height: 300,
+                      width: MediaQuery.of(context).size.width / 1.5,
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: alertIconBoxheight / 2),
+                              child: Container(
+                                color: white,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Align(
+                                        alignment: Alignment.topCenter,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.yellow,
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(10),
+                                              bottomRight: Radius.circular(10),
+                                            ),
+                                          ),
+                                          height: 10,
+                                        )),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: alertIconBoxheight / 2 + 5, bottom: 10),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            heading,
+                                            style: TextStyle(
+                                                color: colorSecondary, fontWeight: FontWeight.w300),
+                                          ),
+                                          Text(text),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              height: alertIconBoxheight,
+                              width: alertIconBoxheight * 2.5,
+                              decoration: BoxDecoration(
+                                color: colorSecondary,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5),
+                                ),
+                              ),
+                              child: Center(
+                                  child: Image.asset(
+                                "assets/images/alert.png",
+                                height: alertIconBoxheight - 5,
+                                width: alertIconBoxheight - 5,
+                              )),
+                            ),
+                          ),
+                          Align(
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                  icon: Icon(Icons.cancel_outlined, color: Colors.black),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  })),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionDuration: Duration(milliseconds: 200),
+    );
+  }
+
   login() async {
     if (_formKey.currentState!.validate()) {
       LoginResponse isAuthorized =
           await loginController.login(LoginData(username: username, password: password));
-      if (isAuthorized != null) {
+      if (isAuthorized.token != 'null') {
         Navigator.of(context).pushAndRemoveUntil(
             PageRouteBuilder(pageBuilder: (_, __, ___) => new DashBoard()), (route) => false);
       } else {
+        showCustomAlert(
+            'Alert - Invalid Credentials', "Wrong username or password keyed in. Please try again");
         print('Not Logged IN');
       }
     } else {
@@ -289,7 +404,11 @@ class _LoginPageState extends State<LoginPage> {
                                       color: _passwordLabelColor,
                                     ),
                                     IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          setState(() {
+                                            _obscureText = !_obscureText;
+                                          });
+                                        },
                                         icon: Icon(
                                           !_obscureText ? Icons.visibility : Icons.visibility_off,
                                           color: !_obscureText
