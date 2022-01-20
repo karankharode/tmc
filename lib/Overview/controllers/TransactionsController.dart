@@ -6,7 +6,7 @@ class ItemListController {
   final dio = Dio();
 
   Future<ItemListResponse?> getItems() async {
-    String endPointUrl = "https://atx-tmc.herokuapp.com/main/allTransactions";
+    String endPointUrl = "https://atx-tmc.herokuapp.com/main/allTransactions?page=1&limit=20";
     try {
       ItemListResponse? serverMsg = await _httpPostRequest(endPointUrl);
       return serverMsg;

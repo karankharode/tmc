@@ -13,7 +13,7 @@ class ItemListResponse {
     List<Item> tempItemList = [];
     // print('here 2');
     // print(response.data['message']['msg']);
-    var data = response.data;
+    var data = response.data['docs'];
     for (var item in data) {
       print(item);
       tempItemList.add(Item(
