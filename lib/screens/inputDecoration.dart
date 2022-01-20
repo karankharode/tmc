@@ -19,7 +19,6 @@ import 'package:tmc/constants/colors.dart';
 
 InputDecoration getInputDecoration(
     String labelText, Color _fillColor, Color _labelColor, prefixIcon, suffixIcon) {
-  const double borderWidth = 2;
   const double borderRadius = 12;
   const double gapPadding = 8;
   return InputDecoration(

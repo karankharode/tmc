@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginData.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginResponse.dart';
-import 'package:tmc/constants/colors.dart';
 
 class LoginController {
   final dio = Dio();
@@ -24,11 +24,9 @@ class LoginController {
         loginData.username,
         loginData.password,
       );
-      print(serverMsg.toString());
       return serverMsg;
     } catch (e) {
-      print(e);
-      print("error");
+      debugPrint(e.toString());
       return LoginResponse(token: 'null');
     }
   }
@@ -36,7 +34,6 @@ class LoginController {
   Future<LoginResponse> _httpPostRequest(
       String url, FormData formData, String username, String password) async {
     LoginResponse loginResponse = LoginResponse(token: 'null');
-    bool isAuthorized = false;
 
     try {
 // Set default configs
@@ -51,20 +48,13 @@ class LoginController {
         url,
         data: {"username": username, "password": password},
       );
-      print('Got here2');
-      print(response.statusCode);
-      print(response.data);
-      // print(response.data['_id']);
 
       if (response.statusCode == 200) {
-        print('Got here3');
         loginResponse = LoginResponse.getLoginResponseFromHttpResponse(response);
-        isAuthorized = true;
       }
       return loginResponse;
     } catch (e) {
-      print(e);
-
+      debugPrint(e.toString());
       throw new Exception('Error');
     }
   }
@@ -83,20 +73,16 @@ class LoginController {
         'username': username,
         'password': password,
       });
-      try {
-        if (response.data['status'] == "Successful registration") {
-          result = "Successful registration";
-        } else if (response.data['status'] == "Username already Exists !") {
-          result = "Username already Exists !";
-        }
-      } catch (e) {
-        print("error during parsing");
+
+      if (response.data['status'] == "Successful registration") {
+        result = "Successful registration";
+      } else if (response.data['status'] == "Username already Exists !") {
+        result = "Username already Exists !";
       }
-      print(response.data);
+
       return result;
-    } catch (e) {
-      print('Error during api call');
-      return 'Error';
+    } on DioError catch (exception) {
+      return exception.response?.data ?? "Error in getting data from server";
     }
   }
 }

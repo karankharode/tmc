@@ -7,6 +7,7 @@ import 'package:tmc/LoginAndSignUp/modals/LoginResponse.dart';
 import 'package:tmc/LoginAndSignUp/screens/RegisterPage.dart';
 import 'package:tmc/constants/colors.dart';
 import 'package:tmc/constants/buttonStyles.dart';
+import 'package:tmc/constants/config.dart';
 import 'package:tmc/screens/inputDecoration.dart';
 
 class LoginPage extends StatefulWidget {
@@ -274,8 +275,13 @@ class _LoginPageState extends State<LoginPage> {
       LoginResponse isAuthorized =
           await loginController.login(LoginData(username: username, password: password));
       if (isAuthorized.token != 'null') {
+        setState(() {
+          token = isAuthorized.token;
+        });
         Navigator.of(context).pushAndRemoveUntil(
-            PageRouteBuilder(pageBuilder: (_, __, ___) => new DashBoard()), (route) => false);
+            PageRouteBuilder(
+                pageBuilder: (_, __, ___) => new DashBoard(loginResponse: isAuthorized)),
+            (route) => false);
       } else {
         showCustomAlert(
             'Alert - Invalid Credentials', "Wrong username or password keyed in. Please try again");

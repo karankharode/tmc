@@ -1,5 +1,9 @@
+// ignore_for_file: camel_case_types
+
 import 'package:flutter/material.dart';
-import 'package:jiffy/jiffy.dart';
+import 'package:tmc/Notifications/controller/UpdateController.dart';
+import 'package:tmc/Notifications/modals/TransactionById.dart';
+import 'package:tmc/Overview/models/transaction.dart';
 import 'package:tmc/constants/colors.dart';
 
 class NotificationsPage extends StatefulWidget {
@@ -10,7 +14,6 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  final _scrollController = ScrollController(initialScrollOffset: 50.0);
   DateTime selectedDate = DateTime.now();
   String tempStatus = 'Failed';
   Future<Null> _selectDate(BuildContext context) async {
@@ -27,7 +30,46 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   final double alertIconBoxheight = 40;
 
-  showTransactionDetails() {
+  getData(String id) async {
+    showcircularPI();
+    ItemResponse? itemResponse = await UpdateController().getItemById(id);
+    Navigator.pop(context);
+    showTransactionDetails(itemResponse!);
+  }
+
+  showcircularPI() {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, anim1, anim2) {
+        return Container();
+      },
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.4),
+      barrierLabel: '',
+      transitionBuilder: (context, a1, a2, widget) {
+        final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+        return Transform(
+          transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+          child: Opacity(
+            opacity: a1.value,
+            child: AlertDialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              contentPadding: EdgeInsets.zero,
+              // scrollable: true,
+              content: Container(
+                width: MediaQuery.of(context).size.width / 1.8,
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionDuration: Duration(milliseconds: 200),
+    );
+  }
+
+  showTransactionDetails(ItemResponse itemResponse) {
     showGeneralDialog(
       context: context,
       pageBuilder: (context, anim1, anim2) {
@@ -94,112 +136,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                           SizedBox(
                             height: 10,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 18.0, right: 18),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    dataColumn(heading: "Transaction ID", value: 'A113459'),
-                                    dataColumn(heading: "Service", value: 'Mobicare'),
-                                    dataColumn(heading: "Timestamp", value: '2022/01/15 14:11:13'),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    dataColumn(heading: "Amount", value: 'RM110.00'),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(8, 18, 8, 18),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                "Status",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
-                                                width: 132,
-                                                height: 35,
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Color(0xff8492A6), width: 1),
-                                                    borderRadius:
-                                                        BorderRadius.all(Radius.circular(5))),
-                                                child: DropdownButton<String>(
-                                                  focusColor: Colors.red,
-                                                  value: tempStatus,
-                                                  //elevation: 5,
-                                                  isExpanded: true,
-                                                  style: TextStyle(color: Colors.white),
-                                                  iconEnabledColor: Colors.black,
-                                                  underline: Container(),
-                                                  items: <String>[
-                                                    "Success",
-                                                    "Failed",
-                                                    "Pending",
-                                                    "Cancelled",
-                                                  ].map<DropdownMenuItem<String>>((String value) {
-                                                    return DropdownMenuItem<String>(
-                                                      value: value,
-                                                      child: Container(
-                                                        child: Text(
-                                                          value,
-                                                          style:
-                                                              TextStyle(color: Color(0xff8492A6)),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }).toList(),
-                                                  hint: Text(
-                                                    "Select Service",
-                                                    style: TextStyle(
-                                                        color: Color(0xff8492A6),
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.w500),
-                                                  ),
-                                                  onChanged: (String? val) {
-                                                    if (val != null) {
-                                                      setState(() {
-                                                        tempStatus = val;
-                                                      });
-                                                    }
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    dataColumn(
-                                        heading: "Failure reason", value: 'Connection Timeout'),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    dataColumn(heading: "Name", value: 'Ranushah Rajah'),
-                                    dataColumn(heading: "Payment Method", value: 'Online Banking'),
-                                    dataColumn(heading: "Bank/Card Name", value: 'Maybank'),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 40,
-                                )
-                              ],
-                            ),
-                          ),
+                          buildDetails(itemResponse)
                         ],
                       ),
                     ),
@@ -211,6 +148,291 @@ class _NotificationsPageState extends State<NotificationsPage> {
         );
       },
       transitionDuration: Duration(milliseconds: 200),
+    );
+  }
+
+  showConfirmation(String status, String id) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, anim1, anim2) {
+        return Container();
+      },
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.4),
+      barrierLabel: '',
+      transitionBuilder: (context, a1, a2, widget) {
+        final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+        return Transform(
+          transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+          child: Opacity(
+            opacity: a1.value,
+            child: AlertDialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              contentPadding: EdgeInsets.zero,
+              // scrollable: true,
+              content: Container(
+                width: MediaQuery.of(context).size.width / 2.7,
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: alertIconBoxheight / 2),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: white,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Confirm',
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    )),
+                                IconButton(
+                                    icon: Icon(Icons.cancel_outlined, color: Colors.black),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    })
+                              ],
+                            ),
+                          ),
+                          Divider(
+                            color: Colors.black,
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 30),
+                            child: Text(
+                                "Are you sure you want tp update the transaction status to $status?"),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(Colors.red)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("No, Cancel"),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    setState(() {
+                                      tempStatus = status;
+                                    });
+                                    await UpdateController().updateItem(id, status);
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    showHurrayDialog(status, id);
+                                  },
+                                  style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(Colors.green)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Yes, Update"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionDuration: Duration(milliseconds: 200),
+    );
+  }
+
+  showHurrayDialog(String status, String id) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, anim1, anim2) {
+        return Container();
+      },
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.4),
+      barrierLabel: '',
+      transitionBuilder: (context, a1, a2, widget) {
+        final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+        return Transform(
+          transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+          child: Opacity(
+            opacity: a1.value,
+            child: AlertDialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              contentPadding: EdgeInsets.zero,
+              scrollable: true,
+              alignment: Alignment.center,
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/celebration.png',
+                    height: 70,
+                    fit: BoxFit.fitHeight,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 2.7,
+                    decoration: BoxDecoration(
+                      color: white,
+                      borderRadius: BorderRadius.all(Radius.circular(40)),
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: alertIconBoxheight / 2,
+                            right: alertIconBoxheight / 2,
+                            top: 20,
+                            bottom: 20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Hooray! Status for transaction ID $id is $status",
+                              style: TextStyle(
+                                  color: Colors.green, fontWeight: FontWeight.w800, fontSize: 20),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      transitionDuration: Duration(milliseconds: 200),
+    );
+  }
+
+  Padding buildDetails(ItemResponse itemResponse) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 18.0, right: 18),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              dataColumn(heading: "Transaction ID", value: itemResponse.item.id.toString()),
+              dataColumn(heading: "Service", value: itemResponse.item.service.toString()),
+              dataColumn(heading: "Timestamp", value: itemResponse.item.timestamp.toString()),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              dataColumn(heading: "Amount", value: itemResponse.item.amount.toString()),
+              Expanded(
+                flex: 1,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 18, 8, 18),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Status",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
+                          width: 132,
+                          height: 35,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Color(0xff8492A6), width: 1),
+                              borderRadius: BorderRadius.all(Radius.circular(5))),
+                          child: DropdownButton<String>(
+                            focusColor: Colors.red,
+                            value: tempStatus,
+                            //elevation: 5,
+                            isExpanded: true,
+                            style: TextStyle(color: Colors.white),
+                            iconEnabledColor: Colors.black,
+                            underline: Container(),
+                            items: <String>[
+                              "Success",
+                              "Failed",
+                              "Pending",
+                              "Cancelled",
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Container(
+                                  child: Text(
+                                    value,
+                                    style: TextStyle(color: Color(0xff8492A6)),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            hint: Text(
+                              "Select Service",
+                              style: TextStyle(
+                                  color: Color(0xff8492A6),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            onChanged: (String? val) {
+                              if (val != null) {
+                                showConfirmation(val, itemResponse.item.id);
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              dataColumn(heading: "Failure reason", value: 'Connection Timeout'),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              dataColumn(heading: "Name", value: 'Ranushah Rajah'),
+              dataColumn(heading: "Payment Method", value: 'Online Banking'),
+              dataColumn(heading: "Bank/Card Name", value: 'Maybank'),
+            ],
+          ),
+          SizedBox(
+            height: 40,
+          )
+        ],
+      ),
     );
   }
 
@@ -282,7 +504,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
               child: Scrollbar(
             isAlwaysShown: true,
             showTrackOnHover: true,
-            controller: _scrollController,
             hoverThickness: 10.0,
             child: ListView.builder(
                 scrollDirection: Axis.vertical,
@@ -327,7 +548,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                             )),
                                         InkWell(
                                           onTap: () {
-                                            showTransactionDetails();
+                                            getData("D113891");
                                           },
                                           child: Text(' View transaction Details...',
                                               style: TextStyle(
@@ -363,6 +584,20 @@ class _NotificationsPageState extends State<NotificationsPage> {
           ))
         ],
       ),
+    );
+  }
+}
+
+class loader extends StatelessWidget {
+  const loader({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 38.0),
+      child: Center(child: CircularProgressIndicator()),
     );
   }
 }

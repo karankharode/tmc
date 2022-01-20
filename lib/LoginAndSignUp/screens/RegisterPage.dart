@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tmc/LoginAndSignUp/controller/LoginController.dart';
-import 'package:tmc/LoginAndSignUp/modals/SignupuData.dart';
 import 'package:tmc/LoginAndSignUp/screens/LoginPage.dart';
 import 'package:tmc/constants/colors.dart';
 import 'package:tmc/constants/buttonStyles.dart';
