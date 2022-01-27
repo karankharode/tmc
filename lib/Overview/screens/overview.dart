@@ -20,58 +20,28 @@ class Overview extends StatefulWidget {
 
 class _OverviewState extends State<Overview> with AutomaticKeepAliveClientMixin<Overview> {
   String? _chosenValue;
-  String? searchTerm;
+  String? searchTerm = "";
   DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-    getData();
+    getData(1, 5);
   }
 
-  getData() async {
+  getData(int page, int limit,
+      {String keyword = '',
+      String source_service = '',
+      String start_date = 'null',
+      String end_Date = 'null'}) async {
     print('Get data');
-    if (!dataFetched) {
-      itemListResponse = await ItemListController().getItems();
-      if (itemListResponse != null) {
-        data = MyData(itemListResponse!);
-        totaltransaction = itemListResponse!.itemList.length;
-        int temp = 0;
-        for (var i = 0; i < itemListResponse!.itemList.length; i++) {
-          if (itemListResponse!.itemList[i].status.toString().toLowerCase() ==
-              'Failed'.toLowerCase()) {
-            temp = temp + 1;
-          }
-        }
-        totalFailedtransaction = temp;
-        setState(() {
-          dataFetched = true;
-        });
 
-        print(itemListResponse);
-      } else {}
-    }
-  }
-
-  changeFilter(String value) {
-    print(value);
-    print(itemListResponse);
-    if (value.toString().toLowerCase() != 'All Services'.toLowerCase()) {
-      List<Item> tempList = itemListResponse?.itemList
-              .where((element) =>
-                  element.service.toString().toLowerCase() == value.toString().toLowerCase())
-              .toList() ??
-          [];
-      data = MyData(ItemListResponse(itemList: tempList));
-      totaltransaction = tempList.length;
-      int temp = 0;
-      for (var i = 0; i < tempList.length; i++) {
-        if (tempList[i].status.toString().toLowerCase() == 'Failed'.toLowerCase()) {
-          temp = temp + 1;
-        }
-      }
-      totalFailedtransaction = temp;
-    } else {
+    itemListResponse = await ItemListController().getItems(page, limit,
+        keyword: keyword,
+        source_service: source_service,
+        start_date: start_date,
+        end_Date: end_Date);
+    if (itemListResponse != null) {
       data = MyData(itemListResponse!);
       totaltransaction = itemListResponse!.itemList.length;
       int temp = 0;
@@ -82,64 +52,111 @@ class _OverviewState extends State<Overview> with AutomaticKeepAliveClientMixin<
         }
       }
       totalFailedtransaction = temp;
+      setState(() {
+        dataFetched = true;
+      });
+
+      print(itemListResponse);
     }
   }
 
-  searchTransaction(value) {
-    if (value.toString().trim().toLowerCase() != '') {
-      List<Item> tempList = itemListResponse?.itemList
-              .where((element) =>
-                  element.id.toString().toLowerCase().contains(value.toString().toLowerCase()))
-              .toList() ??
-          [];
-      data = MyData(ItemListResponse(itemList: tempList));
-      totaltransaction = tempList.length;
-      int temp = 0;
-      for (var i = 0; i < tempList.length; i++) {
-        if (tempList[i].status.toString().toLowerCase() == 'Failed'.toLowerCase()) {
-          temp = temp + 1;
-        }
-      }
-      totalFailedtransaction = temp;
+  // changeFilter(String value) {
+  //   print(value);
+  //   print(itemListResponse);
+  //   if (value.toString().toLowerCase() != 'All Services'.toLowerCase()) {
+  //     List<Item> tempList = itemListResponse?.itemList
+  //             .where((element) =>
+  //                 element.service.toString().toLowerCase() == value.toString().toLowerCase())
+  //             .toList() ??
+  //         [];
+  //     data = MyData(ItemListResponse(
+  //         totalDocs: 0,
+  //         limit: 0,
+  //         totalPages: 0,
+  //         page: 1,
+  //         pageCounter: 0,
+  //         hasPrevPage: false,
+  //         hasNextPage: false,
+  //         prevPage: 0,
+  //         nextPage: 2,
+  //         itemList: tempList));
+  //     totaltransaction = tempList.length;
+  //     int temp = 0;
+  //     for (var i = 0; i < tempList.length; i++) {
+  //       if (tempList[i].status.toString().toLowerCase() == 'Failed'.toLowerCase()) {
+  //         temp = temp + 1;
+  //       }
+  //     }
+  //     totalFailedtransaction = temp;
+  //   } else {
+  //     data = MyData(itemListResponse!);
+  //     totaltransaction = itemListResponse!.itemList.length;
+  //     int temp = 0;
+  //     for (var i = 0; i < itemListResponse!.itemList.length; i++) {
+  //       if (itemListResponse!.itemList[i].status.toString().toLowerCase() ==
+  //           'Failed'.toLowerCase()) {
+  //         temp = temp + 1;
+  //       }
+  //     }
+  //     totalFailedtransaction = temp;
+  //   }
+  // }
 
-      setState(() {});
-    } else {
-      data = MyData(itemListResponse!);
-      totaltransaction = itemListResponse!.itemList.length;
-      int temp = 0;
-      for (var i = 0; i < itemListResponse!.itemList.length; i++) {
-        if (itemListResponse!.itemList[i].status.toString().toLowerCase() ==
-            'Failed'.toLowerCase()) {
-          temp = temp + 1;
-        }
-      }
-      totalFailedtransaction = temp;
-      setState(() {});
-    }
-  }
+  // searchTransaction(value) {
+  //   if (value.toString().trim().toLowerCase() != '') {
+  //     List<Item> tempList = itemListResponse?.itemList
+  //             .where((element) =>
+  //                 element.id.toString().toLowerCase().contains(value.toString().toLowerCase()))
+  //             .toList() ??
+  //         [];
+  //     data = MyData(ItemListResponse(itemList: tempList));
+  //     totaltransaction = tempList.length;
+  //     int temp = 0;
+  //     for (var i = 0; i < tempList.length; i++) {
+  //       if (tempList[i].status.toString().toLowerCase() == 'Failed'.toLowerCase()) {
+  //         temp = temp + 1;
+  //       }
+  //     }
+  //     totalFailedtransaction = temp;
 
-  changeDate(DateTime selected) {
-    print(selected.toString());
+  //     setState(() {});
+  //   } else {
+  //     data = MyData(itemListResponse!);
+  //     totaltransaction = itemListResponse!.itemList.length;
+  //     int temp = 0;
+  //     for (var i = 0; i < itemListResponse!.itemList.length; i++) {
+  //       if (itemListResponse!.itemList[i].status.toString().toLowerCase() ==
+  //           'Failed'.toLowerCase()) {
+  //         temp = temp + 1;
+  //       }
+  //     }
+  //     totalFailedtransaction = temp;
+  //     setState(() {});
+  //   }
+  // }
 
-    List<Item> tempList = itemListResponse?.itemList
-            .where((element) =>
-                Jiffy(selected, 'yyyy-MM-dd hh:mm:ss').date.toString() ==
-                Jiffy(element.timestamp.toString(), "yyyy/MM/dd hh:mm:ss").date.toString())
-            .toList() ??
-        [];
-    data = MyData(ItemListResponse(itemList: tempList));
+  // changeDate(DateTime selected) {
+  //   print(selected.toString());
 
-    totaltransaction = tempList.length;
-    int temp = 0;
-    for (var i = 0; i < tempList.length; i++) {
-      if (tempList[i].status.toString().toLowerCase() == 'Failed'.toLowerCase()) {
-        temp = temp + 1;
-      }
-    }
-    totalFailedtransaction = temp;
+  //   List<Item> tempList = itemListResponse?.itemList
+  //           .where((element) =>
+  //               Jiffy(selected, 'yyyy-MM-dd hh:mm:ss').date.toString() ==
+  //               Jiffy(element.timestamp.toString(), "yyyy/MM/dd hh:mm:ss").date.toString())
+  //           .toList() ??
+  //       [];
+  //   data = MyData(ItemListResponse(itemList: tempList));
 
-    setState(() {});
-  }
+  //   totaltransaction = tempList.length;
+  //   int temp = 0;
+  //   for (var i = 0; i < tempList.length; i++) {
+  //     if (tempList[i].status.toString().toLowerCase() == 'Failed'.toLowerCase()) {
+  //       temp = temp + 1;
+  //     }
+  //   }
+  //   totalFailedtransaction = temp;
+
+  //   setState(() {});
+  // }
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -151,7 +168,7 @@ class _OverviewState extends State<Overview> with AutomaticKeepAliveClientMixin<
       setState(() {
         selectedDate = picked;
       });
-      changeDate(selectedDate);
+      // changeDate(selectedDate);
     }
   }
 
@@ -220,7 +237,7 @@ class _OverviewState extends State<Overview> with AutomaticKeepAliveClientMixin<
                         children: [
                           overviewFigureWidget(
                             failed: false,
-                            figure: totaltransaction,
+                            figure: itemListResponse?.totalDocs ?? 0,
                             selectDate: () {
                               _selectDate(context);
                             },
@@ -235,9 +252,7 @@ class _OverviewState extends State<Overview> with AutomaticKeepAliveClientMixin<
                                 borderRadius: BorderRadius.all(Radius.circular(5))),
                             child: DropdownButton<String>(
                               focusColor: Colors.white,
-
                               value: _chosenValue,
-                              //elevation: 5,
                               isExpanded: true,
                               style: TextStyle(color: Colors.white),
                               iconEnabledColor: Colors.black,
@@ -265,10 +280,15 @@ class _OverviewState extends State<Overview> with AutomaticKeepAliveClientMixin<
                               ),
                               onChanged: (String? value) {
                                 if (value != null) {
-                                  changeFilter(value);
+                                  // changeFilter(value);
                                   setState(() {
                                     _chosenValue = value;
                                   });
+                                  if (_chosenValue!.toLowerCase() != "All Services".toLowerCase()) {
+                                    getData(1, 5, source_service: _chosenValue ?? "null");
+                                  } else {
+                                    getData(1, 5);
+                                  }
                                 }
                               },
                             ),
@@ -296,7 +316,8 @@ class _OverviewState extends State<Overview> with AutomaticKeepAliveClientMixin<
                                 prefixIcon: IconButton(
                                   onPressed: () {
                                     print("Prefix pressed");
-                                    searchTransaction(searchTerm);
+                                    getData(1, 5, keyword: searchTerm!);
+                                    // searchTransaction(searchTerm);
                                   },
                                   icon: Icon(
                                     Icons.search,
@@ -312,7 +333,7 @@ class _OverviewState extends State<Overview> with AutomaticKeepAliveClientMixin<
                                 print(searchTerm);
                                 searchTerm = value;
                                 if (value.isEmpty) {
-                                  searchTransaction('');
+                                  // searchTransaction('');
                                 }
                               },
                             ),
@@ -328,22 +349,83 @@ class _OverviewState extends State<Overview> with AutomaticKeepAliveClientMixin<
                     child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 2),
                   child: Container(
-                    child: PaginatedDataTable(
-                      source: data,
-                      columns: [
-                        DataColumn(
-                          label: Text("ID"),
+                    child: Column(
+                      children: [
+                        DataTable(
+                          columns: [
+                            DataColumn(
+                              label: Text("ID"),
+                            ),
+                            DataColumn(label: Text("Service")),
+                            DataColumn(label: Text("Timestamp")),
+                            DataColumn(label: Text("Amount")),
+                            DataColumn(label: Text("Status")),
+                          ],
+                          columnSpacing: ((MediaQuery.of(context).size.width - 30)) / 8.5,
+                          // showFirstLastButtons: false,
+                          rows: [
+                            ...itemListResponse!.itemList.map((e) {
+                              int index = itemListResponse!.itemList.indexOf(e);
+                              Item _data = e;
+
+                              return DataRow(
+                                  color: MaterialStateProperty.all(
+                                      index % 2 == 0 ? tableDarkColor : white),
+                                  cells: [
+                                    DataCell(Text(e.id.toString())),
+                                    DataCell(Text(e.service.toString())),
+                                    DataCell(Text(e.timestamp.toString())),
+                                    DataCell(Text(e.amount.toString())),
+                                    DataCell(Text(e.status.toString())),
+                                  ]);
+                            })
+                          ],
+
+                          horizontalMargin: 20,
+                          showCheckboxColumn: false,
                         ),
-                        DataColumn(label: Text("Service")),
-                        DataColumn(label: Text("Timestamp")),
-                        DataColumn(label: Text("Amount")),
-                        DataColumn(label: Text("Status")),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  if (itemListResponse!.hasPrevPage) {
+                                    print(itemListResponse!.prevPage);
+                                    getData(
+                                      (itemListResponse?.prevPage ?? 2),
+                                      5,
+                                      keyword: searchTerm != "" ? searchTerm! : "",
+                                      source_service: _chosenValue != null ? _chosenValue! : "",
+                                    );
+                                  }
+                                },
+                                icon: Icon(
+                                  Icons.arrow_back_ios,
+                                  color: itemListResponse!.hasPrevPage ? Colors.black : Colors.grey,
+                                )),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  if (itemListResponse!.hasNextPage) {
+                                    print(itemListResponse!.nextPage);
+                                    getData(itemListResponse?.nextPage ?? 2, 5,
+                                        keyword: searchTerm != "" ? searchTerm! : "",
+                                        source_service: _chosenValue != null ? _chosenValue! : "");
+                                  }
+                                },
+                                icon: Icon(Icons.arrow_forward_ios,
+                                    color: itemListResponse!.hasNextPage
+                                        ? Colors.black
+                                        : Colors.grey)),
+                            SizedBox(
+                              width: 15,
+                            )
+                          ],
+                        )
                       ],
-                      columnSpacing: ((MediaQuery.of(context).size.width - 30)) / 8.5,
-                      showFirstLastButtons: true,
-                      horizontalMargin: 20,
-                      rowsPerPage: 5,
-                      showCheckboxColumn: false,
                     ),
                   ),
                 ))

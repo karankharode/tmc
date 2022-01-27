@@ -89,6 +89,46 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  showLoaderDialog() {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, anim1, anim2) {
+        return Container();
+      },
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.4),
+      barrierLabel: '',
+      transitionBuilder: (context, a1, a2, widget) {
+        final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+        return Transform(
+          transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+          child: Opacity(
+            opacity: a1.value,
+            child: AlertDialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              scrollable: true,
+              alignment: Alignment.center,
+              contentPadding: EdgeInsets.zero,
+              content: Container(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                      height: 100,
+                      width: MediaQuery.of(context).size.width / 1.5,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      )),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionDuration: Duration(milliseconds: 200),
+    );
+  }
+
   showCustomAlert(String heading, String text) {
     showGeneralDialog(
       context: context,
@@ -202,7 +242,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   doSignUp() async {
-    // if (true) {
+    showLoaderDialog();
     if (_formKey.currentState!.validate()) {
       String isAuthorized = await signUpController.signup(username, password);
 
@@ -213,13 +253,16 @@ class _RegisterPageState extends State<RegisterPage> {
               .pushReplacement(PageRouteBuilder(pageBuilder: (_, __, ___) => new LoginPage()));
           showRegisteredDialog();
         } else if (isAuthorized == "Username already Exists !") {
+          Navigator.pop(context);
           showCustomAlert(
               "Alert - Invalid Registration!", "Uername already exists. Please try again.");
         }
       } else {
+        Navigator.pop(context);
         showCustomAlert("Alert - Invalid Registration!", "Unknown error occured!");
       }
     } else {
+      Navigator.pop(context);
       showCustomAlert("Alert - Invalid Registration!",
           "Uername and password has to be more than 3 characters. Please try again.");
     }
@@ -307,7 +350,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   if (val != null) {
                                     if (val.isEmpty) {
                                       return "Please enter a valid password";
-                                    } else if (val.length < 3) {
+                                    } else if (val.length <= 3) {
                                       return "Password must contain 3 characters";
                                     } else {
                                       return null;

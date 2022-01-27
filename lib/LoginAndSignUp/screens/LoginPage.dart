@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tmc/Dashboard/screens/Dashboard.dart';
@@ -43,6 +44,20 @@ class _LoginPageState extends State<LoginPage> {
   Color _passwordLabelColor = Colors.grey;
 
   bool _obscureText = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // getTokenFCM();
+  }
+
+  getTokenFCM() async {
+    showCustomAlert("Token", "retriving");
+    String token = await FirebaseMessaging.instance.getToken() ?? "";
+    Navigator.pop(context);
+    print(token);
+    showCustomAlert("Token", token);
+  }
 
   showForgotPasswordDialog() {
     showGeneralDialog(
@@ -270,7 +285,48 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  showLoaderDialog() {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, anim1, anim2) {
+        return Container();
+      },
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.4),
+      barrierLabel: '',
+      transitionBuilder: (context, a1, a2, widget) {
+        final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+        return Transform(
+          transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+          child: Opacity(
+            opacity: a1.value,
+            child: AlertDialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              scrollable: true,
+              alignment: Alignment.center,
+              contentPadding: EdgeInsets.zero,
+              content: Container(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                      height: 100,
+                      width: MediaQuery.of(context).size.width / 1.5,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      )),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionDuration: Duration(milliseconds: 200),
+    );
+  }
+
   login() async {
+    showLoaderDialog();
     if (_formKey.currentState!.validate()) {
       LoginResponse isAuthorized =
           await loginController.login(LoginData(username: username, password: password));
@@ -283,11 +339,13 @@ class _LoginPageState extends State<LoginPage> {
                 pageBuilder: (_, __, ___) => new DashBoard(loginResponse: isAuthorized)),
             (route) => false);
       } else {
+        Navigator.pop(context);
         showCustomAlert(
             'Alert - Invalid Credentials', "Wrong username or password keyed in. Please try again");
         print('Not Logged IN');
       }
     } else {
+      Navigator.pop(context);
       // showCustomFlushBar(context, "Enter Valid Username/Password !", 2);
     }
   }
@@ -379,8 +437,8 @@ class _LoginPageState extends State<LoginPage> {
                                   if (val != null) {
                                     if (val.isEmpty) {
                                       return "Please enter a valid password";
-                                    } else if (val.length < 3) {
-                                      return "Password must contain 8 characters";
+                                    } else if (val.length <= 3) {
+                                      return "Password must contain 3 characters";
                                     } else {
                                       return null;
                                     }
@@ -459,24 +517,25 @@ class _LoginPageState extends State<LoginPage> {
                             SizedBox(
                               height: 15,
                             ),
-                            // GestureDetector(
-                            //   onTap: () {
-                            //     showForgotPasswordDialog();
-                            //   },
-                            //   child: Row(
-                            //     mainAxisAlignment: MainAxisAlignment.center,
-                            //     children: [
-                            //       Text(
-                            //         'Forgot Password? ',
-                            //         style: TextStyle(color: login_blue),
-                            //       ),
-                            //       Text(
-                            //         'Reset',
-                            //         style: TextStyle(color: login_blue),
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
+                            GestureDetector(
+                              onTap: () {
+                                // showForgotPasswordDialog();
+                                getTokenFCM();
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Forgot Password? ',
+                                    style: TextStyle(color: login_blue),
+                                  ),
+                                  Text(
+                                    'Reset',
+                                    style: TextStyle(color: login_blue),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),

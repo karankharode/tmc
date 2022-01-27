@@ -44,6 +44,22 @@
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
+  <script src="./firebase-messaging-sw.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD5pvov9erS5PSJrnM1OQq_lnoKi0EUAUQ",
+      authDomain: "doodledesk-184de.firebaseapp.com",
+      projectId: "doodledesk-184de",
+      storageBucket: "doodledesk-184de.appspot.com",
+      messagingSenderId: "368195722051",
+      appId: "1:368195722051:web:4fd80d1b6d70e8827b2df6",
+      measurementId: "G-31ZYFG3CHJ"
+    }
+    firebase.initializeApp(firebaseConfig);
+  </script>
   <script>
     var serviceWorkerVersion = null;
     var scriptLoaded = false;
@@ -103,7 +119,11 @@
           }
         }, 4000);
       });
-    } else {
+    }
+
+
+
+    else {
       // Service workers not supported. Just drop the <script> tag.
       loadMainDartJs();
     }

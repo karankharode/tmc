@@ -5,8 +5,23 @@ import 'package:tmc/constants/config.dart';
 class ItemListController {
   final dio = Dio();
 
-  Future<ItemListResponse?> getItems() async {
-    String endPointUrl = "https://atx-tmc.herokuapp.com/main/allTransactions?page=1&limit=20";
+  Future<ItemListResponse?> getItems(
+    int page,
+    int limit, {
+    String keyword = '',
+    String source_service = '',
+    String start_date = 'null',
+    String end_Date = 'null',
+  }) async {
+    String endPointUrl =
+        "https://atx-tmc.herokuapp.com/main/allTransactions?page=$page&limit=$limit";
+    String extension = "";
+    if (keyword != "") extension = extension + "&keyword=$keyword";
+
+    if (source_service != "") extension = extension + "&source_service=$source_service";
+
+    endPointUrl = endPointUrl + extension;
+
     try {
       ItemListResponse? serverMsg = await _httpPostRequest(endPointUrl);
       return serverMsg;
@@ -35,9 +50,8 @@ class ItemListController {
         itemListResponse = ItemListResponse.getItemListResponseFromHttpResponse(response);
         return itemListResponse;
       }
-      return ItemListResponse(itemList: []);
     } on DioError catch (exception) {
-      return exception.response?.data ?? ItemListResponse(itemList: []);
+      return exception.response?.data;
     }
   }
 }
