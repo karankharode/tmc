@@ -517,25 +517,25 @@ class _LoginPageState extends State<LoginPage> {
                             SizedBox(
                               height: 15,
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                // showForgotPasswordDialog();
-                                getTokenFCM();
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Forgot Password? ',
-                                    style: TextStyle(color: login_blue),
-                                  ),
-                                  Text(
-                                    'Reset',
-                                    style: TextStyle(color: login_blue),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     // showForgotPasswordDialog();
+                            //     getTokenFCM();
+                            //   },
+                            //   child: Row(
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     children: [
+                            //       Text(
+                            //         'Forgot Password? ',
+                            //         style: TextStyle(color: login_blue),
+                            //       ),
+                            //       Text(
+                            //         'Reset',
+                            //         style: TextStyle(color: login_blue),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

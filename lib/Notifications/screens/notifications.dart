@@ -343,13 +343,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
             children: [
               dataColumn(heading: "Transaction ID", value: itemResponse.item.id.toString()),
               dataColumn(heading: "Service", value: itemResponse.item.service.toString()),
-              dataColumn(heading: "Timestamp", value: itemResponse.item.timestamp.toString()),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              dataColumn(heading: "Amount", value: itemResponse.item.amount.toString()),
               Expanded(
                 flex: 1,
                 child: Center(
@@ -417,15 +410,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   ),
                 ),
               ),
-              dataColumn(heading: "Failure reason", value: 'Connection Timeout'),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              dataColumn(heading: "Name", value: 'Ranushah Rajah'),
-              dataColumn(heading: "Payment Method", value: 'Online Banking'),
-              dataColumn(heading: "Bank/Card Name", value: 'Maybank'),
+              dataColumn(heading: "Amount", value: itemResponse.item.amount.toString()),
+              dataColumn(heading: "Timestamp", value: itemResponse.item.timestamp.toString()),
             ],
           ),
           SizedBox(
