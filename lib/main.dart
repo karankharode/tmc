@@ -9,13 +9,14 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp(
       options: FirebaseOptions(
-          apiKey: "AIzaSyD5pvov9erS5PSJrnM1OQq_lnoKi0EUAUQ",
-          authDomain: "doodledesk-184de.firebaseapp.com",
-          projectId: "doodledesk-184de",
-          storageBucket: "doodledesk-184de.appspot.com",
-          messagingSenderId: "368195722051",
-          appId: "1:368195722051:web:4fd80d1b6d70e8827b2df6",
-          measurementId: "G-31ZYFG3CHJ"));
+          apiKey: "AIzaSyAAdqp4ACoyVRHaQ8sPnpIrWJZqKDz0eCQ",
+          authDomain: "atx-tmc.firebaseapp.com",
+          databaseURL: "https://atx-tmc-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "atx-tmc",
+          storageBucket: "atx-tmc.appspot.com",
+          messagingSenderId: "348686832653",
+          appId: "1:348686832653:web:863ab72a483fe312383144",
+          measurementId: "G-97Y01Z0SYF"));
   runApp(MultiProvider(
     providers: [
       Provider<LoginController>(create: (_) => LoginController()),
