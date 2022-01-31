@@ -11,7 +11,7 @@ class UpdateController {
       ItemResponse? serverMsg = await _httpPostRequest(endPointUrl);
       return serverMsg;
     } catch (e) {
-      print(e);
+      // print(e);
       return null;
     }
   }
@@ -22,7 +22,7 @@ class UpdateController {
       bool serverMsg = await _httpPostRequestForUpdate(endPointUrl, id, status);
       return serverMsg;
     } catch (e) {
-      print(e);
+      // print(e);
       return false;
     }
   }

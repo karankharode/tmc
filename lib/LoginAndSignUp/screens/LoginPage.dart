@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Color _passwordLabelColor = Colors.grey;
 
-  bool _obscureText = false;
+  bool _obscureText = true;
 
   @override
   void initState() {
@@ -340,9 +340,9 @@ class _LoginPageState extends State<LoginPage> {
             (route) => false);
       } else {
         Navigator.pop(context);
-        showCustomAlert(
-            'Alert - Invalid Credentials', "Wrong username or password keyed in. Please try again");
-        print('Not Logged IN');
+        print(isAuthorized.token);
+        showCustomAlert('Alert - Invalid Credentials', isAuthorized.responseText);
+        // print('Not Logged IN');
       }
     } else {
       Navigator.pop(context);

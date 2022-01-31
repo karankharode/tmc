@@ -25,6 +25,8 @@ class _OverviewState extends State<Overview> {
   String? searchTerm = "";
   DateTime selectedDate = DateTime.now();
   DateTime endDate = DateTime.now();
+  bool startDateSelected = false;
+  bool endDateSelected = false;
 
   @override
   void initState() {
@@ -35,15 +37,15 @@ class _OverviewState extends State<Overview> {
   getData(int page, int limit,
       {String keyword = '',
       String source_service = '',
-      String start_date = 'null',
-      String end_Date = 'null'}) async {
-    print('Get data');
+      String start_date = '',
+      String end_Date = ''}) async {
+    // print('Get data');
 
     itemListResponse = await ItemListController().getItems(page, limit,
         keyword: keyword,
         source_service: source_service,
-        start_date: start_date,
-        end_Date: end_Date);
+        start_date: startDateSelected ? start_date : '',
+        end_Date: endDateSelected ? end_Date : '');
     if (itemListResponse != null) {
       data = MyData(itemListResponse!);
       totaltransaction = itemListResponse!.itemList.length;
@@ -59,7 +61,7 @@ class _OverviewState extends State<Overview> {
         dataFetched = true;
       });
 
-      print(itemListResponse);
+      // print(itemListResponse);
     }
   }
 
@@ -170,9 +172,22 @@ class _OverviewState extends State<Overview> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
+        startDateSelected = true;
       });
+
       // changeDate(selectedDate);
+    } else {
+      setState(() {
+        startDateSelected = false;
+      });
     }
+    getData(
+      1,
+      5,
+      keyword: searchTerm!,
+      start_date: startDateSelected ? selectedDate.toString() : "",
+      end_Date: endDateSelected ? endDate.toString() : "",
+    );
   }
 
   Future<Null> _selectEndDate(BuildContext context) async {
@@ -184,9 +199,22 @@ class _OverviewState extends State<Overview> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         endDate = picked;
+        endDateSelected = true;
       });
+
       // changeDate(selectedDate);
+    } else {
+      setState(() {
+        endDateSelected = false;
+      });
     }
+    getData(
+      1,
+      5,
+      keyword: searchTerm!,
+      start_date: startDateSelected ? selectedDate.toString() : "",
+      end_Date: endDateSelected ? endDate.toString() : "",
+    );
   }
 
   Stack buildCalendarIcon(bool start) {
@@ -215,6 +243,17 @@ class _OverviewState extends State<Overview> {
   }
 
   final double alertIconBoxheight = 40;
+
+  getStatusColor(String status) {
+    switch (status) {
+      case "Failed":
+        return Colors.red;
+      case "Success":
+        return Colors.green;
+      default:
+        return Colors.black;
+    }
+  }
 
   getDataForSingleitem(String id) async {
     showcircularPI();
@@ -426,6 +465,8 @@ class _OverviewState extends State<Overview> {
                                       (itemListResponse?.page ?? 1),
                                       5,
                                       keyword: searchTerm != "" ? searchTerm! : "",
+                                      start_date: startDateSelected ? selectedDate.toString() : "",
+                                      end_Date: endDateSelected ? endDate.toString() : "",
                                       // source_service: _chosenValue != null ? _chosenValue! : "",
                                     );
                                   },
@@ -666,9 +707,15 @@ class _OverviewState extends State<Overview> {
                                 underline: Container(),
                                 items: <String>[
                                   "All Services",
-                                  "GoPay",
-                                  "Mypospay",
+                                  "mypospay",
+                                  "Gopay",
+                                  "Gopayz",
                                   "Runcit Hero",
+                                  "Mobicare",
+                                  "Policystreet",
+                                  "Covid Test",
+                                  "Flexiparking",
+                                  "wallet"
                                 ].map<DropdownMenuItem<String>>((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
@@ -693,9 +740,22 @@ class _OverviewState extends State<Overview> {
                                     });
                                     if (_chosenValue!.toLowerCase() !=
                                         "All Services".toLowerCase()) {
-                                      getData(1, 5, source_service: _chosenValue ?? "null");
+                                      getData(
+                                        1,
+                                        5,
+                                        source_service: _chosenValue ?? "null",
+                                        start_date:
+                                            startDateSelected ? selectedDate.toString() : "",
+                                        end_Date: endDateSelected ? endDate.toString() : "",
+                                      );
                                     } else {
-                                      getData(1, 5);
+                                      getData(
+                                        1,
+                                        5,
+                                        start_date:
+                                            startDateSelected ? selectedDate.toString() : "",
+                                        end_Date: endDateSelected ? endDate.toString() : "",
+                                      );
                                     }
                                   }
                                 },
@@ -721,11 +781,13 @@ class _OverviewState extends State<Overview> {
                                   contentPadding: EdgeInsets.only(left: 14),
                                   suffixIcon: buildCalendarIcon(true),
                                   floatingLabelBehavior: FloatingLabelBehavior.never,
-                                  hintText: selectedDate.year.toString() +
-                                      "-" +
-                                      selectedDate.month.toString() +
-                                      "-" +
-                                      selectedDate.day.toString(),
+                                  hintText: startDateSelected
+                                      ? (selectedDate.year.toString() +
+                                          "-" +
+                                          selectedDate.month.toString() +
+                                          "-" +
+                                          selectedDate.day.toString())
+                                      : "Start Date",
                                 ),
                               ),
                             ),
@@ -747,8 +809,15 @@ class _OverviewState extends State<Overview> {
                                   hintStyle: TextStyle(overflow: TextOverflow.clip),
                                   prefixIcon: IconButton(
                                     onPressed: () {
-                                      print("Prefix pressed");
-                                      getData(1, 5, keyword: searchTerm!);
+                                      // print("Prefix pressed");
+                                      getData(
+                                        1,
+                                        5,
+                                        keyword: searchTerm!,
+                                        start_date:
+                                            startDateSelected ? selectedDate.toString() : "",
+                                        end_Date: endDateSelected ? endDate.toString() : "",
+                                      );
                                       // searchTransaction(searchTerm);
                                     },
                                     icon: Icon(
@@ -762,7 +831,7 @@ class _OverviewState extends State<Overview> {
                                   hintText: 'Search Transactions',
                                 ),
                                 onChanged: (value) {
-                                  print(searchTerm);
+                                  // print(searchTerm);
                                   searchTerm = value;
                                   if (value.isEmpty) {
                                     // searchTransaction('');
@@ -790,11 +859,13 @@ class _OverviewState extends State<Overview> {
                                   contentPadding: EdgeInsets.only(left: 14),
                                   suffixIcon: buildCalendarIcon(false),
                                   floatingLabelBehavior: FloatingLabelBehavior.never,
-                                  hintText: endDate.year.toString() +
-                                      "-" +
-                                      endDate.month.toString() +
-                                      "-" +
-                                      endDate.day.toString(),
+                                  hintText: endDateSelected
+                                      ? (endDate.year.toString() +
+                                          "-" +
+                                          endDate.month.toString() +
+                                          "-" +
+                                          endDate.day.toString())
+                                      : "End Date",
                                 ),
                               ),
                             ),
@@ -857,7 +928,10 @@ class _OverviewState extends State<Overview> {
                                       onTap: () {
                                         getDataForSingleitem(e.id.toString());
                                       },
-                                      child: Text(e.status.toString()))),
+                                      child: Text(
+                                        e.status.toString(),
+                                        style: TextStyle(color: getStatusColor(e.status)),
+                                      ))),
                                 ],
                               );
                             })
@@ -873,11 +947,14 @@ class _OverviewState extends State<Overview> {
                             IconButton(
                                 onPressed: () {
                                   if (itemListResponse!.hasPrevPage) {
-                                    print(itemListResponse!.prevPage);
+                                    // print(itemListResponse!.prevPage);
                                     getData(
                                       (itemListResponse?.prevPage ?? 2),
                                       5,
                                       keyword: searchTerm != "" ? searchTerm! : "",
+
+                                      start_date: startDateSelected ? selectedDate.toString() : "",
+                                      end_Date: endDateSelected ? endDate.toString() : "",
                                       // source_service: _chosenValue != null ? _chosenValue! : "",
                                     );
                                   }
@@ -892,11 +969,13 @@ class _OverviewState extends State<Overview> {
                             IconButton(
                                 onPressed: () {
                                   if (itemListResponse!.hasNextPage) {
-                                    print(itemListResponse!.nextPage);
+                                    // print(itemListResponse!.nextPage);
                                     getData(
                                       itemListResponse?.nextPage ?? 2,
                                       5,
                                       keyword: searchTerm != "" ? searchTerm! : "",
+                                      start_date: startDateSelected ? selectedDate.toString() : "",
+                                      end_Date: endDateSelected ? endDate.toString() : "",
                                     );
                                   }
                                 },

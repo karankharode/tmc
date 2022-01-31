@@ -26,8 +26,8 @@ class LoginController {
       );
       return serverMsg;
     } catch (e) {
-      debugPrint(e.toString());
-      return LoginResponse(token: 'null');
+      // debugPrint(e.toString());
+      return LoginResponse(token: 'null', responseText: "Error in getting data from server");
     }
   }
 
@@ -52,10 +52,12 @@ class LoginController {
       if (response.statusCode == 200) {
         loginResponse = LoginResponse.getLoginResponseFromHttpResponse(response);
       }
+
       return loginResponse;
-    } catch (e) {
-      debugPrint(e.toString());
-      throw new Exception('Error');
+    } on DioError catch (exception) {
+      return LoginResponse(
+          token: "null",
+          responseText: exception.response?.data ?? "Error in getting data from server");
     }
   }
 

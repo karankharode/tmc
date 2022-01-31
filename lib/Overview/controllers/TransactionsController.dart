@@ -10,8 +10,8 @@ class ItemListController {
     int limit, {
     String keyword = '',
     String source_service = '',
-    String start_date = 'null',
-    String end_Date = 'null',
+    String start_date = '',
+    String end_Date = '',
   }) async {
     String endPointUrl =
         "https://atx-tmc.herokuapp.com/main/allTransactions?page=$page&limit=$limit";
@@ -19,6 +19,8 @@ class ItemListController {
     if (keyword != "") extension = extension + "&keyword=$keyword";
 
     if (source_service != "") extension = extension + "&source_service=$source_service";
+    if (start_date != "") extension = extension + "&start_date=$start_date";
+    if (end_Date != "") extension = extension + "&end_Date=$end_Date";
 
     endPointUrl = endPointUrl + extension;
 

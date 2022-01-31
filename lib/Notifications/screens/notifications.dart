@@ -1,10 +1,12 @@
 // ignore_for_file: camel_case_types
 
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:tmc/Notifications/controller/UpdateController.dart';
 import 'package:tmc/Notifications/modals/TransactionById.dart';
-import 'package:tmc/Overview/models/transaction.dart';
 import 'package:tmc/constants/colors.dart';
+import 'package:tmc/constants/config.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({Key? key}) : super(key: key);
@@ -15,7 +17,12 @@ class NotificationsPage extends StatefulWidget {
 
 class _NotificationsPageState extends State<NotificationsPage> {
   DateTime selectedDate = DateTime.now();
+  bool dateSelected = false;
   String tempStatus = 'Failed';
+
+  String? searchTerm = "";
+  List seenIndexes = [];
+
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
@@ -25,7 +32,18 @@ class _NotificationsPageState extends State<NotificationsPage> {
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
+        dateSelected = true;
       });
+    else {
+      setState(() {
+        dateSelected = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   final double alertIconBoxheight = 40;
@@ -450,15 +468,25 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       border: OutlineInputBorder(),
                       alignLabelWithHint: true,
                       contentPadding: EdgeInsets.zero,
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: grey,
-                        size: 18,
+                      prefixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {});
+                        },
+                        icon: Icon(
+                          Icons.search,
+                          color: Colors.black,
+                          size: 18,
+                        ),
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       labelText: 'Search Transaction',
                       hintText: 'Search Transactions',
                     ),
+                    onChanged: (value) {
+                      // print(searchTerm);
+                      searchTerm = value;
+                      setState(() {});
+                    },
                   ),
                 ),
 
@@ -483,7 +511,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         ),
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.never,
-                      hintText: selectedDate.toString(),
+                      hintText: dateSelected ? selectedDate.toString() : "Select Date",
                     ),
                   ),
                 ),
@@ -492,87 +520,114 @@ class _NotificationsPageState extends State<NotificationsPage> {
           ),
 
           Expanded(
-              child: Scrollbar(
-            isAlwaysShown: true,
-            showTrackOnHover: true,
-            hoverThickness: 10.0,
-            child: ListView.builder(
+            child: FirebaseAnimatedList(
+                shrinkWrap: true,
+                physics: BouncingScrollPhysics(),
                 scrollDirection: Axis.vertical,
-                itemCount: 20,
-                itemBuilder: (context, index) => Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                          color: index % 2 == 0 ? tableDarkColor : white,
-                          border:
-                              Border.symmetric(horizontal: BorderSide(color: grey, width: 0.5))),
-                      child: Row(
-                        children: [
-                          Expanded(
-                              flex: 1,
-                              child: Container(
-                                child: Center(
-                                  child: Container(
-                                      height: 7,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle, color: notifierColor)),
-                                ),
-                              )),
-                          Expanded(
-                              flex: 12,
-                              child: Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text('Note - Transaction Status Updated',
-                                        style: TextStyle(
-                                          color: notifierColor,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 13,
-                                        )),
-                                    Row(
-                                      children: [
-                                        Text(
-                                            'Status for transaction ID D2696969 has been updated so you can go and check',
+                query: FirebaseDatabase.instance.ref().child('notifications'),
+                itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                    Animation<double> animation, int index) {
+                  Map mydata = snapshot.value as Map;
+                  String id = mydata['id'];
+                  String timestamp = mydata['timestamp'];
+                  DateTime transactionDate = DateTime.parse(timestamp);
+
+                  bool seen = seenIndexes.contains(index) || index >= notificationCount;
+                  print(id);
+                  if (searchTerm != "" || searchTerm != null) {
+                    if (!id.toString().toLowerCase().contains(searchTerm!.toLowerCase())) {
+                      return Container();
+                    }
+                  }
+                  if (dateSelected) {
+                    print("true");
+                    if ("${selectedDate.day.toString()}-${selectedDate.month.toString()}-${selectedDate.year.toString()}" !=
+                        "${transactionDate.day.toString()}-${transactionDate.month.toString()}-${transactionDate.year.toString()}") {
+                      return Container();
+                    }
+                  }
+
+                  return Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: index % 2 == 0 ? tableDarkColor : white,
+                        border: Border.symmetric(horizontal: BorderSide(color: grey, width: 0.5))),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            flex: 1,
+                            child: Container(
+                              child: Center(
+                                child: seen
+                                    ? Container(
+                                        height: 7,
+                                      )
+                                    : Container(
+                                        height: 7,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle, color: notifierColor)),
+                              ),
+                            )),
+                        Expanded(
+                            flex: 12,
+                            child: Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text('Note - Transaction Status Updated',
+                                      style: TextStyle(
+                                        color: seen ? Colors.black87 : notifierColor,
+                                        fontWeight: seen ? FontWeight.w400 : FontWeight.w600,
+                                        fontSize: 13,
+                                      )),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          'Status for transaction ID $id has been updated so you can go and check',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                          )),
+                                      InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            seenIndexes.add(index);
+                                          });
+                                          getData(id.toString());
+                                        },
+                                        child: Text(' View transaction Details...',
                                             style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.w600,
                                               fontSize: 12,
                                             )),
-                                        InkWell(
-                                          onTap: () {
-                                            getData("D113891");
-                                          },
-                                          child: Text(' View transaction Details...',
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 12,
-                                              )),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )),
-                          Expanded(
-                              flex: 3,
-                              child: Container(
-                                child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 14),
-                                      child: Text(
-                                        '22/03/2000',
-                                        style: TextStyle(
-                                            color: bgColor,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14),
                                       ),
-                                    )),
-                              )),
-                        ],
-                      ),
-                    )),
-          ))
+                                    ],
+                                  )
+                                ],
+                              ),
+                            )),
+                        Expanded(
+                            flex: 3,
+                            child: Container(
+                              child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 14),
+                                    child: Text(
+                                      timestamp.toString(),
+                                      style: TextStyle(
+                                          color: bgColor,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14),
+                                    ),
+                                  )),
+                            )),
+                      ],
+                    ),
+                  );
+                }),
+          )
         ],
       ),
     );

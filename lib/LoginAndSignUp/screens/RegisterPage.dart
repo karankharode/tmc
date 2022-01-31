@@ -40,7 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Color _passwordLabelColor = Colors.grey;
 
-  bool _obscureText = false;
+  bool _obscureText = true;
 
   final double alertIconBoxheight = 40;
 

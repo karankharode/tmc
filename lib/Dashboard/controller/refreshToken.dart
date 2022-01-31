@@ -23,9 +23,10 @@ class RefreshToken {
       dio.options.headers['accept'] = 'application/json';
 
       var response = await dio.get(url);
+      // print(response.data);
 
       if (response.data['status'] == "Refresh Token created") {
-        result = "Refresh Token created";
+        result = response.data["auth"].toString();
       }
 
       return result;

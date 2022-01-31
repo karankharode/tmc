@@ -2,12 +2,9 @@ import 'package:dio/dio.dart';
 
 class LoginResponse {
   final String token;
-  // final String responseText;
+  String responseText = "Successful";
 
-  LoginResponse({
-    required this.token,
-    // required this.responseText,
-  });
+  LoginResponse({required this.token, this.responseText = "Successful"});
 
   factory LoginResponse.getLoginResponseFromHttpResponse(Response<dynamic> response) {
     return LoginResponse(

@@ -33,7 +33,7 @@ class ItemListResponse {
     // print(response.data['message']['msg']);
     var data = response.data;
     for (var item in data['docs']) {
-      print(item);
+      // print(item);
       tempItemList.add(Item(
         id: item['_id'],
         service: item['service'],
@@ -64,7 +64,7 @@ class ItemListResponse {
       nextPage = data['nextPage'] ?? 0;
     } catch (e) {}
 
-    print('here 3');
+    // print('here 3');
     return ItemListResponse(
         totalDocs: totalDocs,
         limit: limit,
