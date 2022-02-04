@@ -10,6 +10,7 @@ import 'package:tmc/Notifications/modals/TransactionById.dart';
 import 'package:tmc/Notifications/screens/notifications.dart';
 import 'package:tmc/Overview/controllers/TransactionsController.dart';
 import 'package:tmc/Overview/screens/overview.dart';
+import 'package:tmc/common/SharedPreferencesUtil.dart';
 import 'package:tmc/constants/colors.dart';
 import 'package:tmc/constants/config.dart';
 
@@ -647,6 +648,7 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
+  static final _sharedPref = SharedPref.instance;
   startTimer() {
     _timer = Timer(Duration(minutes: 28), () async {
       // print(token);
@@ -656,6 +658,7 @@ class _DashBoardState extends State<DashBoard> {
         setState(() {
           token = refreshToken;
         });
+        _sharedPref.saveUserAuthToken(refreshToken);
         startTimer();
         // print('token Refreshed');
       } else {
