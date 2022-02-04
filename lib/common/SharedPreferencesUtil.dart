@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPref {
   static const String _isLoggedInKey = "isLoggedIn";
-  static const String _authTokenKey = "authToken";
+  static const String _authTokenKey = "auth";
   static const String _userInfo = "userInfo";
   static final SharedPref instance = SharedPref._instantiate();
 
@@ -38,6 +38,7 @@ class SharedPref {
   }
 
   saveUser(value) async {
+    print("json : $value");
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(_userInfo, value);
   }

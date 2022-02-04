@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tmc/LoginAndSignUp/controller/LoginController.dart';
 import 'package:tmc/LoginAndSignUp/screens/LoginPage.dart';
+import 'package:tmc/LoginAndSignUp/screens/SplashScreen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
       title: 'TMC',
       theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Arvo'),
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: SplashScreen(),
     );
   }
 }

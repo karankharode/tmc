@@ -12,4 +12,11 @@ class LoginResponse {
       // responseText: response.data['auth'],
     );
   }
+  factory LoginResponse.fromJson(var response) {
+    print("token : ${response['auth']}");
+    return LoginResponse(
+      token: response['auth'],
+      // responseText: response.data['auth'],
+    );
+  }
 }

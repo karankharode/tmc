@@ -1,10 +1,25 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginData.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginResponse.dart';
+import 'package:tmc/common/SharedPreferencesUtil.dart';
 
 class LoginController {
   final dio = Dio();
+  static final _sharedPref = SharedPref.instance;
+
+  Future<bool> isUserAuthorized() async {
+    // return false;
+    return await SharedPref.instance.readIsLoggedIn();
+  }
+
+  Future<LoginResponse> getSavedUserDetails() async {
+    String? data = await _sharedPref.getUser();
+    print("Data from prefs : " + data!);
+    LoginResponse loginResponse = new LoginResponse.fromJson(json.decode(data));
+    return loginResponse;
+  }
 
   Future<String> signup(String username, String password) async {
     const endPointUrl = 'https://atx-tmc.herokuapp.com/auth/register';
@@ -51,6 +66,8 @@ class LoginController {
 
       if (response.statusCode == 200) {
         loginResponse = LoginResponse.getLoginResponseFromHttpResponse(response);
+        _sharedPref.saveIsLoggedIn(true);
+        _sharedPref.saveUser(json.encode(response.data));
       }
 
       return loginResponse;
@@ -86,5 +103,10 @@ class LoginController {
     } on DioError catch (exception) {
       return exception.response?.data ?? "Error in getting data from server";
     }
+  }
+
+  Future<bool> logOut() {
+    _sharedPref.removeUser();
+    return _sharedPref.removeIsLoggedIn();
   }
 }

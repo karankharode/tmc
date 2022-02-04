@@ -479,8 +479,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         ),
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.never,
-                      labelText: 'Search Transaction',
-                      hintText: 'Search Transactions',
+                      labelText: 'Search Notification',
+                      hintText: 'Search Notification',
                     ),
                     onChanged: (value) {
                       // print(searchTerm);
@@ -524,13 +524,28 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 shrinkWrap: true,
                 physics: BouncingScrollPhysics(),
                 scrollDirection: Axis.vertical,
-                query: FirebaseDatabase.instance.ref().child('notifications'),
+                sort: (a, b) {
+                  Map mydata = a.value as Map;
+                  Map mydata2 = b.value as Map;
+                  String timestamp = mydata['timestamp'];
+                  String timestamp2 = mydata2['timestamp'];
+
+                  return timestamp2.compareTo(timestamp);
+                },
+                query: FirebaseDatabase.instance
+                    .ref()
+                    .child('notifications')
+                    .orderByChild("timestamps"),
                 itemBuilder: (BuildContext context, DataSnapshot snapshot,
                     Animation<double> animation, int index) {
                   Map mydata = snapshot.value as Map;
                   String id = mydata['id'];
                   String timestamp = mydata['timestamp'];
                   DateTime transactionDate = DateTime.parse(timestamp);
+
+                  try {
+                    timestamp = timestamp.replaceFirst("Z", "").split("T").join(" ").toString();
+                  } catch (e) {}
 
                   bool seen = seenIndexes.contains(index) || index >= notificationCount;
                   print(id);
@@ -575,7 +590,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Text('Note - Transaction Status Updated',
+                                  Text('Alert - Transaction has Failed!',
                                       style: TextStyle(
                                         color: seen ? Colors.black87 : notifierColor,
                                         fontWeight: seen ? FontWeight.w400 : FontWeight.w600,
@@ -583,8 +598,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                       )),
                                   Row(
                                     children: [
-                                      Text(
-                                          'Status for transaction ID $id has been updated so you can go and check',
+                                      Text('Transaction ID $id has been failed.',
                                           style: TextStyle(
                                             fontSize: 12,
                                           )),
@@ -597,10 +611,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                         },
                                         child: Text(' View transaction Details...',
                                             style: TextStyle(
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 12,
-                                            )),
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 12,
+                                                decoration: TextDecoration.underline)),
                                       ),
                                     ],
                                   )

@@ -1,6 +1,5 @@
 // ignore_for_file: camel_case_types
 import 'package:flutter/material.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:tmc/Notifications/controller/UpdateController.dart';
 import 'package:tmc/Notifications/modals/TransactionById.dart';
 import 'package:tmc/Overview/controllers/TransactionsController.dart';
@@ -21,7 +20,7 @@ class Overview extends StatefulWidget {
 }
 
 class _OverviewState extends State<Overview> {
-  String? _chosenValue;
+  String? _chosenValue = '';
   String? searchTerm = "";
   DateTime selectedDate = DateTime.now();
   DateTime endDate = DateTime.now();
@@ -39,24 +38,36 @@ class _OverviewState extends State<Overview> {
       String source_service = '',
       String start_date = '',
       String end_Date = ''}) async {
-    // print('Get data');
+    String startDateString = '';
+    String endDateString = '';
+    try {
+      if (startDateSelected) {
+        startDateString = selectedDate.year.toString() +
+            "-" +
+            selectedDate.month.toString() +
+            "-" +
+            selectedDate.day.toString();
+      }
+    } catch (e) {
+      startDateString = '';
+    }
+    try {
+      if (endDateSelected) {
+        endDateString =
+            endDate.year.toString() + "-" + endDate.month.toString() + "-" + endDate.day.toString();
+      }
+    } catch (e) {
+      endDateString = '';
+    }
 
     itemListResponse = await ItemListController().getItems(page, limit,
         keyword: keyword,
         source_service: source_service,
-        start_date: startDateSelected ? start_date : '',
-        end_Date: endDateSelected ? end_Date : '');
+        start_date: startDateSelected ? startDateString : '',
+        end_Date: endDateSelected ? endDateString : '');
     if (itemListResponse != null) {
       data = MyData(itemListResponse!);
       totaltransaction = itemListResponse!.itemList.length;
-      int temp = 0;
-      for (var i = 0; i < itemListResponse!.itemList.length; i++) {
-        if (itemListResponse!.itemList[i].status.toString().toLowerCase() ==
-            'Failed'.toLowerCase()) {
-          temp = temp + 1;
-        }
-      }
-      totalFailedtransaction = temp;
       setState(() {
         dataFetched = true;
       });
@@ -167,11 +178,12 @@ class _OverviewState extends State<Overview> {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime(2015, 8),
+        firstDate: DateTime(2020, 8),
         lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
+
         startDateSelected = true;
       });
 
@@ -185,6 +197,8 @@ class _OverviewState extends State<Overview> {
       1,
       5,
       keyword: searchTerm!,
+      source_service:
+          _chosenValue!.toLowerCase() != "All Services".toLowerCase() ? _chosenValue ?? "" : "",
       start_date: startDateSelected ? selectedDate.toString() : "",
       end_Date: endDateSelected ? endDate.toString() : "",
     );
@@ -194,7 +208,7 @@ class _OverviewState extends State<Overview> {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime(2015, 8),
+        firstDate: DateTime(2020, 8),
         lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate) {
       setState(() {
@@ -212,6 +226,8 @@ class _OverviewState extends State<Overview> {
       1,
       5,
       keyword: searchTerm!,
+      source_service:
+          _chosenValue!.toLowerCase() != "All Services".toLowerCase() ? _chosenValue ?? "" : "",
       start_date: startDateSelected ? selectedDate.toString() : "",
       end_Date: endDateSelected ? endDate.toString() : "",
     );
@@ -464,6 +480,10 @@ class _OverviewState extends State<Overview> {
                                     getData(
                                       (itemListResponse?.page ?? 1),
                                       5,
+                                      source_service: _chosenValue!.toLowerCase() !=
+                                              "All Services".toLowerCase()
+                                          ? _chosenValue ?? ""
+                                          : "",
                                       keyword: searchTerm != "" ? searchTerm! : "",
                                       start_date: startDateSelected ? selectedDate.toString() : "",
                                       end_Date: endDateSelected ? endDate.toString() : "",
@@ -700,7 +720,7 @@ class _OverviewState extends State<Overview> {
                                   borderRadius: BorderRadius.all(Radius.circular(5))),
                               child: DropdownButton<String>(
                                 focusColor: Colors.white,
-                                value: _chosenValue,
+                                value: _chosenValue != '' ? _chosenValue : null,
                                 isExpanded: true,
                                 style: TextStyle(color: Colors.white),
                                 iconEnabledColor: Colors.black,
@@ -743,7 +763,7 @@ class _OverviewState extends State<Overview> {
                                       getData(
                                         1,
                                         5,
-                                        source_service: _chosenValue ?? "null",
+                                        source_service: _chosenValue ?? "",
                                         start_date:
                                             startDateSelected ? selectedDate.toString() : "",
                                         end_Date: endDateSelected ? endDate.toString() : "",
@@ -814,6 +834,10 @@ class _OverviewState extends State<Overview> {
                                         1,
                                         5,
                                         keyword: searchTerm!,
+                                        source_service: _chosenValue!.toLowerCase() !=
+                                                "All Services".toLowerCase()
+                                            ? _chosenValue ?? ""
+                                            : "",
                                         start_date:
                                             startDateSelected ? selectedDate.toString() : "",
                                         end_Date: endDateSelected ? endDate.toString() : "",
@@ -899,6 +923,14 @@ class _OverviewState extends State<Overview> {
                             ...itemListResponse!.itemList.map((e) {
                               int index = itemListResponse!.itemList.indexOf(e);
                               Item _data = e;
+                              String timestamp = e.timestamp;
+                              try {
+                                timestamp = e.timestamp
+                                    .replaceFirst("Z", "")
+                                    .split("T")
+                                    .join(" ")
+                                    .toString();
+                              } catch (e) {}
 
                               return DataRow(
                                 color: MaterialStateProperty.all(
@@ -918,7 +950,7 @@ class _OverviewState extends State<Overview> {
                                       onTap: () {
                                         getDataForSingleitem(e.id.toString());
                                       },
-                                      child: Text(e.timestamp.toString()))),
+                                      child: Text(timestamp.toString()))),
                                   DataCell(InkWell(
                                       onTap: () {
                                         getDataForSingleitem(e.id.toString());
@@ -952,7 +984,10 @@ class _OverviewState extends State<Overview> {
                                       (itemListResponse?.prevPage ?? 2),
                                       5,
                                       keyword: searchTerm != "" ? searchTerm! : "",
-
+                                      source_service: _chosenValue!.toLowerCase() !=
+                                              "All Services".toLowerCase()
+                                          ? _chosenValue ?? ""
+                                          : "",
                                       start_date: startDateSelected ? selectedDate.toString() : "",
                                       end_Date: endDateSelected ? endDate.toString() : "",
                                       // source_service: _chosenValue != null ? _chosenValue! : "",
@@ -973,6 +1008,10 @@ class _OverviewState extends State<Overview> {
                                     getData(
                                       itemListResponse?.nextPage ?? 2,
                                       5,
+                                      source_service: _chosenValue!.toLowerCase() !=
+                                              "All Services".toLowerCase()
+                                          ? _chosenValue ?? ""
+                                          : "",
                                       keyword: searchTerm != "" ? searchTerm! : "",
                                       start_date: startDateSelected ? selectedDate.toString() : "",
                                       end_Date: endDateSelected ? endDate.toString() : "",

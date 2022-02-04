@@ -77,6 +77,7 @@ class _DashBoardState extends State<DashBoard> {
     Map mydata = event.snapshot.value as Map;
     String id = mydata['id'];
     String timestamp = mydata['timestamp'];
+    setState(() {});
     showCustomAlert("Alert-Transaction Failed!", "Transaction ID $id has failed", id);
   }
 
@@ -96,6 +97,7 @@ class _DashBoardState extends State<DashBoard> {
           child: Opacity(
             opacity: a1.value,
             child: AlertDialog(
+              insetPadding: EdgeInsets.fromLTRB(40, 5, 0, 0),
               backgroundColor: Colors.transparent,
               elevation: 0,
               scrollable: true,
@@ -105,7 +107,7 @@ class _DashBoardState extends State<DashBoard> {
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: Container(
-                    height: 300,
+                    height: 100,
                     width: MediaQuery.of(context).size.width / 1.5,
                     child: Stack(
                       children: [
@@ -168,6 +170,7 @@ class _DashBoardState extends State<DashBoard> {
                                                   style: TextStyle(
                                                     color: Colors.red,
                                                     // fontWeight: FontWeight.w600,
+                                                    decoration: TextDecoration.underline,
                                                     fontSize: 12,
                                                   )),
                                             ),
