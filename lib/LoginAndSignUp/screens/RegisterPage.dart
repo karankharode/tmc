@@ -154,7 +154,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: Container(
-                    height: 300,
+                    height: 100,
                     width: MediaQuery.of(context).size.width / 1.5,
                     child: Stack(
                       children: [
@@ -242,29 +242,35 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   doSignUp() async {
-    showLoaderDialog();
-    if (_formKey.currentState!.validate()) {
-      String isAuthorized = await signUpController.signup(username, password);
+    if (password != confirmPassword || username != confirmUsername) {
+      showCustomAlert(
+          "Alert - Invalid Registration!", "Username or password do not match. Please try again.");
+    } else {
+      showLoaderDialog();
+      if (_formKey.currentState!.validate()) {
+        String isAuthorized = await signUpController.signup(username, password);
 
-      // print(isAuthorized.toString());
-      if (isAuthorized != "Error") {
-        if (isAuthorized == "Successful registration") {
-          Navigator.of(context)
-              .pushReplacement(PageRouteBuilder(pageBuilder: (_, __, ___) => new LoginPage()));
-          showRegisteredDialog();
-        } else if (isAuthorized == "Username already Exists !") {
+        // print(isAuthorized.toString());
+        if (isAuthorized != "Error") {
+          if (isAuthorized == "Successful registration") {
+            Navigator.of(context)
+                .pushReplacement(PageRouteBuilder(pageBuilder: (_, __, ___) => new LoginPage()));
+            showRegisteredDialog();
+          } else if (isAuthorized == "Username already Exists !") {
+            Navigator.pop(context);
+            showCustomAlert(
+                "Alert - Invalid Registration!", "Uername already exists. Please try again.");
+          }
+        } else {
           Navigator.pop(context);
-          showCustomAlert(
-              "Alert - Invalid Registration!", "Uername already exists. Please try again.");
+          showCustomAlert("Alert - Invalid Registration!", "Unknown error occured!");
         }
       } else {
         Navigator.pop(context);
-        showCustomAlert("Alert - Invalid Registration!", "Unknown error occured!");
+
+        showCustomAlert("Alert - Invalid Registration!",
+            "Username and password has to be more than 3 characters. Please try again.");
       }
-    } else {
-      Navigator.pop(context);
-      showCustomAlert("Alert - Invalid Registration!",
-          "Uername and password has to be more than 3 characters. Please try again.");
     }
   }
 

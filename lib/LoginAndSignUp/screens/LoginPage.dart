@@ -198,7 +198,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: Container(
-                    height: 300,
+                    height: 100,
                     width: MediaQuery.of(context).size.width / 1.5,
                     child: Stack(
                       children: [
@@ -330,7 +330,16 @@ class _LoginPageState extends State<LoginPage> {
     if (_formKey.currentState!.validate()) {
       LoginResponse isAuthorized =
           await loginController.login(LoginData(username: username, password: password));
-      if (isAuthorized.token != 'null') {
+      if (isAuthorized.token == "no internet") {
+        Navigator.pop(context);
+        showCustomAlert('Uh oh, something went wrong! There is a problem with your request',
+            isAuthorized.responseText);
+      } else if (isAuthorized.token == 'null') {
+        Navigator.pop(context);
+        showCustomAlert('Alert - Invalid Credentials', isAuthorized.responseText);
+        // print('Not Logged IN');
+      } else {
+        print("Token : ${isAuthorized.token}");
         setState(() {
           token = isAuthorized.token;
         });
@@ -338,11 +347,6 @@ class _LoginPageState extends State<LoginPage> {
             PageRouteBuilder(
                 pageBuilder: (_, __, ___) => new DashBoard(loginResponse: isAuthorized)),
             (route) => false);
-      } else {
-        Navigator.pop(context);
-        print("Token : ${isAuthorized.token}");
-        showCustomAlert('Alert - Invalid Credentials', isAuthorized.responseText);
-        // print('Not Logged IN');
       }
     } else {
       Navigator.pop(context);

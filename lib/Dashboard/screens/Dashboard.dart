@@ -253,12 +253,129 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
+  showCustomErrorAlert(String heading, String text) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, anim1, anim2) {
+        return Container();
+      },
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.4),
+      barrierLabel: '',
+      transitionBuilder: (context, a1, a2, widget) {
+        final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+        return Transform(
+          transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+          child: Opacity(
+            opacity: a1.value,
+            child: AlertDialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              scrollable: true,
+              alignment: Alignment.topCenter,
+              contentPadding: EdgeInsets.zero,
+              content: Container(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    height: 100,
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: alertIconBoxheight / 2),
+                            child: Container(
+                              color: white,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.yellow,
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(10),
+                                            bottomRight: Radius.circular(10),
+                                          ),
+                                        ),
+                                        height: 10,
+                                      )),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: alertIconBoxheight / 2 + 5, bottom: 10),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          heading,
+                                          style: TextStyle(
+                                              color: colorSecondary, fontWeight: FontWeight.w300),
+                                        ),
+                                        Text(text),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            height: alertIconBoxheight,
+                            width: alertIconBoxheight * 2.5,
+                            decoration: BoxDecoration(
+                              color: colorSecondary,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5),
+                              ),
+                            ),
+                            child: Center(
+                                child: Image.asset(
+                              "assets/images/alert.png",
+                              height: alertIconBoxheight - 5,
+                              width: alertIconBoxheight - 5,
+                            )),
+                          ),
+                        ),
+                        Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                                icon: Icon(Icons.cancel_outlined, color: Colors.black),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                })),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionDuration: Duration(milliseconds: 200),
+    );
+  }
+
   getData(String id) async {
     Navigator.pop(context);
     showcircularPI();
     ItemResponse? itemResponse = await UpdateController().getItemById(id);
     Navigator.pop(context);
-    showTransactionDetails(itemResponse!);
+    if (itemResponse!.item.id == "no internet") {
+      showCustomErrorAlert(
+          "Oops! An error occured", "Request to view transaction is denied Please try again.");
+    } else {
+      showTransactionDetails(itemResponse);
+    }
   }
 
   showcircularPI() {
@@ -456,10 +573,17 @@ class _DashBoardState extends State<DashBoard> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () async {
-                                    await UpdateController().updateItem(id, status);
+                                    bool isUpdated =
+                                        await UpdateController().updateItem(id, status);
                                     Navigator.pop(context);
                                     Navigator.pop(context);
-                                    showHurrayDialog(status, id);
+                                    if (isUpdated) {
+                                      showHurrayDialog(status, id);
+                                    } else {
+                                      showCustomErrorAlert(
+                                          "Uh oh, something went wrong! There is a problem with your status update.",
+                                          "Status update for Transaction ID $id was unsuccessful. Please try again.");
+                                    }
                                   },
                                   style: ButtonStyle(
                                       backgroundColor: MaterialStateProperty.all(Colors.green)),

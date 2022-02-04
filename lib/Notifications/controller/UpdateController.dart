@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:tmc/Notifications/modals/TransactionById.dart';
+import 'package:tmc/Overview/models/transaction.dart';
 import 'package:tmc/constants/config.dart';
 
 class UpdateController {
@@ -46,7 +47,25 @@ class UpdateController {
       }
     } on DioError catch (exception) {
       print(exception.error.toString());
-      return exception.response?.data;
+      if (exception.error.toString() == "XMLHttpRequest error.") {
+        return ItemResponse(
+            item: Item(
+                id: "no internet",
+                service: "service",
+                timestamp: "timestamp",
+                amount: -1,
+                status: "status",
+                v: -1));
+      }
+      return ItemResponse(
+          item: Item(
+              id: exception.response?.data,
+              service: "service",
+              timestamp: "timestamp",
+              amount: -1,
+              status: "status",
+              v: -1));
+      
     }
   }
 

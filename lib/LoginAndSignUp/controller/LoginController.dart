@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginData.dart';
 import 'package:tmc/LoginAndSignUp/modals/LoginResponse.dart';
 import 'package:tmc/common/SharedPreferencesUtil.dart';
@@ -41,7 +42,7 @@ class LoginController {
       );
       return serverMsg;
     } catch (e) {
-      // debugPrint(e.toString());
+      debugPrint(e.toString());
       return LoginResponse(token: 'null', responseText: "Error in getting data from server");
     }
   }
@@ -64,6 +65,9 @@ class LoginController {
         data: {"username": username, "password": password},
       );
 
+      print(response.statusCode);
+      print(response.data);
+
       if (response.statusCode == 200) {
         loginResponse = LoginResponse.getLoginResponseFromHttpResponse(response);
         _sharedPref.saveIsLoggedIn(true);
@@ -72,6 +76,12 @@ class LoginController {
 
       return loginResponse;
     } on DioError catch (exception) {
+      if(exception.error.toString() == "XMLHttpRequest error."){
+      return LoginResponse(
+          token: "no internet",
+          responseText: "Sorry we could not log you in. Please try again.");
+
+      };
       return LoginResponse(
           token: "null",
           responseText: exception.response?.data ?? "Error in getting data from server");

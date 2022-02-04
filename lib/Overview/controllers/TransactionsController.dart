@@ -29,7 +29,17 @@ class ItemListController {
       return serverMsg;
     } catch (e) {
       print("caught");
-      return null;
+      return ItemListResponse(
+          totalDocs: -3,
+          limit: 0,
+          totalPages: 0,
+          page: 0,
+          pageCounter: 0,
+          hasPrevPage: false,
+          hasNextPage: false,
+          prevPage: 0,
+          nextPage: 0,
+          itemList: []);
     }
   }
 
@@ -53,7 +63,30 @@ class ItemListController {
         return itemListResponse;
       }
     } on DioError catch (exception) {
-      return exception.response?.data;
+      if (exception.error.toString() == "XMLHttpRequest error.") {
+        return ItemListResponse(
+            totalDocs: -1,
+            limit: 0,
+            totalPages: 0,
+            page: 0,
+            pageCounter: 0,
+            hasPrevPage: false,
+            hasNextPage: false,
+            prevPage: 0,
+            nextPage: 0,
+            itemList: []);
+      }
+      return ItemListResponse(
+          totalDocs: -2,
+          limit: 0,
+          totalPages: 0,
+          page: 0,
+          pageCounter: 0,
+          hasPrevPage: false,
+          hasNextPage: false,
+          prevPage: 0,
+          nextPage: 0,
+          itemList: []);
     }
   }
 }
