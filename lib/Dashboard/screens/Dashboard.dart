@@ -8,6 +8,7 @@ import 'package:tmc/LoginAndSignUp/screens/LoginPage.dart';
 import 'package:tmc/Notifications/controller/UpdateController.dart';
 import 'package:tmc/Notifications/modals/TransactionById.dart';
 import 'package:tmc/Notifications/screens/notifications.dart';
+import 'package:tmc/Overview/controllers/TransactionsController.dart';
 import 'package:tmc/Overview/screens/overview.dart';
 import 'package:tmc/constants/colors.dart';
 import 'package:tmc/constants/config.dart';
@@ -31,11 +32,6 @@ class _DashBoardState extends State<DashBoard> {
 
   late Timer _timer;
 
-  Map<String, dynamic> body = {
-    "overview": Overview(),
-    "notification": NotificationsPage(),
-  };
-
   // int failedTransactionCount = 0;
   bool isInitialDataLoaded = false;
 
@@ -57,6 +53,27 @@ class _DashBoardState extends State<DashBoard> {
     sub1.cancel();
     // sub2.cancel();
     _timer.cancel();
+  }
+
+  getAllData(int page, int limit,
+      {String keyword = '',
+      String source_service = '',
+      String start_date = '',
+      String end_Date = ''}) async {
+    String startDateString = '';
+    String endDateString = '';
+
+    itemListResponse = await ItemListController().getItems(page, limit,
+        keyword: keyword, source_service: source_service, start_date: '', end_Date: '');
+    if (itemListResponse != null) {
+      data = MyData(itemListResponse!);
+      totaltransaction = itemListResponse!.itemList.length;
+      setState(() {
+        dataFetched = true;
+      });
+
+      // print(itemListResponse);
+    }
   }
 
   setListener() async {
@@ -86,6 +103,10 @@ class _DashBoardState extends State<DashBoard> {
     String id = mydata['id'];
     String timestamp = mydata['timestamp'];
     setState(() {});
+    // getAllData(
+    //   1,
+    //   5,
+    // );
     showCustomAlert("Alert-Transaction Failed!", "Transaction ID $id has failed", id);
   }
 
@@ -764,9 +785,23 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
+  }
+
   @override
   Widget build(BuildContext context) {
     // print("notification count : $notificationCount");
+    rebuildAllChildren(context);
+    Map<String, dynamic> body = {
+      "overview": Overview(),
+      "notification": NotificationsPage(),
+    };
     return Scaffold(
       floatingActionButton: Padding(
         padding: const EdgeInsets.fromLTRB(8, 35, 2, 8),

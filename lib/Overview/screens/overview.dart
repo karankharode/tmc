@@ -10,7 +10,7 @@ bool dataFetched = false;
 late ItemListResponse? itemListResponse;
 late DataTableSource data;
 int totaltransaction = 0;
-int totalFailedtransaction = 0;
+// int totalFailedtransaction = 0;
 
 class Overview extends StatefulWidget {
   const Overview({Key? key}) : super(key: key);
@@ -75,103 +75,7 @@ class _OverviewState extends State<Overview> {
     }
   }
 
-  // changeFilter(String value) {
-  //   print(value);
-  //   print(itemListResponse);
-  //   if (value.toString().toLowerCase() != 'All Services'.toLowerCase()) {
-  //     List<Item> tempList = itemListResponse?.itemList
-  //             .where((element) =>
-  //                 element.service.toString().toLowerCase() == value.toString().toLowerCase())
-  //             .toList() ??
-  //         [];
-  //     data = MyData(ItemListResponse(
-  //         totalDocs: 0,
-  //         limit: 0,
-  //         totalPages: 0,
-  //         page: 1,
-  //         pageCounter: 0,
-  //         hasPrevPage: false,
-  //         hasNextPage: false,
-  //         prevPage: 0,
-  //         nextPage: 2,
-  //         itemList: tempList));
-  //     totaltransaction = tempList.length;
-  //     int temp = 0;
-  //     for (var i = 0; i < tempList.length; i++) {
-  //       if (tempList[i].status.toString().toLowerCase() == 'Failed'.toLowerCase()) {
-  //         temp = temp + 1;
-  //       }
-  //     }
-  //     totalFailedtransaction = temp;
-  //   } else {
-  //     data = MyData(itemListResponse!);
-  //     totaltransaction = itemListResponse!.itemList.length;
-  //     int temp = 0;
-  //     for (var i = 0; i < itemListResponse!.itemList.length; i++) {
-  //       if (itemListResponse!.itemList[i].status.toString().toLowerCase() ==
-  //           'Failed'.toLowerCase()) {
-  //         temp = temp + 1;
-  //       }
-  //     }
-  //     totalFailedtransaction = temp;
-  //   }
-  // }
-
-  // searchTransaction(value) {
-  //   if (value.toString().trim().toLowerCase() != '') {
-  //     List<Item> tempList = itemListResponse?.itemList
-  //             .where((element) =>
-  //                 element.id.toString().toLowerCase().contains(value.toString().toLowerCase()))
-  //             .toList() ??
-  //         [];
-  //     data = MyData(ItemListResponse(itemList: tempList));
-  //     totaltransaction = tempList.length;
-  //     int temp = 0;
-  //     for (var i = 0; i < tempList.length; i++) {
-  //       if (tempList[i].status.toString().toLowerCase() == 'Failed'.toLowerCase()) {
-  //         temp = temp + 1;
-  //       }
-  //     }
-  //     totalFailedtransaction = temp;
-
-  //     setState(() {});
-  //   } else {
-  //     data = MyData(itemListResponse!);
-  //     totaltransaction = itemListResponse!.itemList.length;
-  //     int temp = 0;
-  //     for (var i = 0; i < itemListResponse!.itemList.length; i++) {
-  //       if (itemListResponse!.itemList[i].status.toString().toLowerCase() ==
-  //           'Failed'.toLowerCase()) {
-  //         temp = temp + 1;
-  //       }
-  //     }
-  //     totalFailedtransaction = temp;
-  //     setState(() {});
-  //   }
-  // }
-
-  // changeDate(DateTime selected) {
-  //   print(selected.toString());
-
-  //   List<Item> tempList = itemListResponse?.itemList
-  //           .where((element) =>
-  //               Jiffy(selected, 'yyyy-MM-dd hh:mm:ss').date.toString() ==
-  //               Jiffy(element.timestamp.toString(), "yyyy/MM/dd hh:mm:ss").date.toString())
-  //           .toList() ??
-  //       [];
-  //   data = MyData(ItemListResponse(itemList: tempList));
-
-  //   totaltransaction = tempList.length;
-  //   int temp = 0;
-  //   for (var i = 0; i < tempList.length; i++) {
-  //     if (tempList[i].status.toString().toLowerCase() == 'Failed'.toLowerCase()) {
-  //       temp = temp + 1;
-  //     }
-  //   }
-  //   totalFailedtransaction = temp;
-
-  //   setState(() {});
-  // }
+ 
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(

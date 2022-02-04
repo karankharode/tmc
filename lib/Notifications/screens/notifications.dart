@@ -387,7 +387,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                               borderRadius: BorderRadius.all(Radius.circular(5))),
                           child: DropdownButton<String>(
                             focusColor: Colors.red,
-                            value: tempStatus,
+                            value: itemResponse.item.status,
                             //elevation: 5,
                             isExpanded: true,
                             style: TextStyle(color: Colors.white),
@@ -524,8 +524,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 shrinkWrap: true,
                 physics: BouncingScrollPhysics(),
                 scrollDirection: Axis.vertical,
-                
-                reverse: true,
+                reverse: false,
                 sort: (a, b) => b.key!.compareTo(a.key!),
                 query: FirebaseDatabase.instance
                     .ref()
