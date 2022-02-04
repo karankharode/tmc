@@ -246,7 +246,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (_formKey.currentState!.validate()) {
       String isAuthorized = await signUpController.signup(username, password);
 
-      print(isAuthorized.toString());
+      // print(isAuthorized.toString());
       if (isAuthorized != "Error") {
         if (isAuthorized == "Successful registration") {
           Navigator.of(context)

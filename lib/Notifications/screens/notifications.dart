@@ -548,14 +548,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   } catch (e) {}
 
                   bool seen = seenIndexes.contains(index) || index >= notificationCount;
-                  print(id);
+                  // print(id);
                   if (searchTerm != "" || searchTerm != null) {
                     if (!id.toString().toLowerCase().contains(searchTerm!.toLowerCase())) {
                       return Container();
                     }
                   }
                   if (dateSelected) {
-                    print("true");
+                    // print("true");
                     if ("${selectedDate.day.toString()}-${selectedDate.month.toString()}-${selectedDate.year.toString()}" !=
                         "${transactionDate.day.toString()}-${transactionDate.month.toString()}-${transactionDate.year.toString()}") {
                       return Container();

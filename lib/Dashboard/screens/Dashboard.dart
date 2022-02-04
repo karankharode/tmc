@@ -63,7 +63,7 @@ class _DashBoardState extends State<DashBoard> {
     });
 
     sub1 = ref.limitToLast(1).onChildAdded.listen((event) {
-      print(event.snapshot.value.toString());
+      // print(event.snapshot.value.toString());
       if (isInitialDataLoaded) {
         setState(() {
           notificationCount = notificationCount + 1;
@@ -620,15 +620,15 @@ class _DashBoardState extends State<DashBoard> {
 
   startTimer() {
     _timer = Timer(Duration(minutes: 30), () async {
-      print(token);
+      // print(token);
       String refreshToken = await RefreshToken().refreshToken(token.toString());
-      print(refreshToken);
+      // print(refreshToken);
       if (refreshToken != "Error") {
         setState(() {
           token = refreshToken;
         });
         startTimer();
-        print('token Refreshed');
+        // print('token Refreshed');
       } else {
         Navigator.of(context).pushAndRemoveUntil(
             PageRouteBuilder(pageBuilder: (_, __, ___) => new LoginPage()), (route) => false);
@@ -758,7 +758,7 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   Widget build(BuildContext context) {
-    print("notification count : $notificationCount");
+    // print("notification count : $notificationCount");
     return Scaffold(
       floatingActionButton: Padding(
         padding: const EdgeInsets.fromLTRB(8, 35, 2, 8),

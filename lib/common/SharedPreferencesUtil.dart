@@ -38,7 +38,7 @@ class SharedPref {
   }
 
   saveUser(value) async {
-    print("json : $value");
+    // print("json : $value");
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(_userInfo, value);
   }

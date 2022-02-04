@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
     showCustomAlert("Token", "retriving");
     String token = await FirebaseMessaging.instance.getToken() ?? "";
     Navigator.pop(context);
-    print(token);
+    // print(token);
     showCustomAlert("Token", token);
   }
 

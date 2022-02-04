@@ -20,7 +20,7 @@ class ItemListController {
 
     if (source_service != "") extension = extension + "&source_service=$source_service";
     if (start_date != "") extension = extension + "&start_date=$start_date";
-    if (end_Date != "") extension = extension + "&end_Date=$end_Date";
+    if (end_Date != "") extension = extension + "&end_date=$end_Date";
 
     endPointUrl = endPointUrl + extension;
 

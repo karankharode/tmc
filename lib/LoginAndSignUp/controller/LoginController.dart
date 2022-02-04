@@ -16,8 +16,8 @@ class LoginController {
 
   Future<LoginResponse> getSavedUserDetails() async {
     String? data = await _sharedPref.getUser();
-    print("Data from prefs : " + data!);
-    LoginResponse loginResponse = new LoginResponse.fromJson(json.decode(data));
+    // print("Data from prefs : " + data!);
+    LoginResponse loginResponse = new LoginResponse.fromJson(json.decode(data!));
     return loginResponse;
   }
 

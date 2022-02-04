@@ -59,7 +59,6 @@ class _OverviewState extends State<Overview> {
     } catch (e) {
       endDateString = '';
     }
-
     itemListResponse = await ItemListController().getItems(page, limit,
         keyword: keyword,
         source_service: source_service,
