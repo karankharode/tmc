@@ -27,6 +27,7 @@ class RefreshToken {
 
       if (response.data['status'] == "Refresh Token created") {
         result = response.data["auth"].toString();
+        print("Token refreshed : ${response.data['auth']}");
       }
 
       return result;

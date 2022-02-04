@@ -340,7 +340,7 @@ class _LoginPageState extends State<LoginPage> {
             (route) => false);
       } else {
         Navigator.pop(context);
-        print(isAuthorized.token);
+        print("Token : ${isAuthorized.token}");
         showCustomAlert('Alert - Invalid Credentials', isAuthorized.responseText);
         // print('Not Logged IN');
       }
