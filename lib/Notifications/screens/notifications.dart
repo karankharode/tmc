@@ -524,14 +524,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 shrinkWrap: true,
                 physics: BouncingScrollPhysics(),
                 scrollDirection: Axis.vertical,
-                sort: (a, b) {
-                  Map mydata = a.value as Map;
-                  Map mydata2 = b.value as Map;
-                  String timestamp = mydata['timestamp'];
-                  String timestamp2 = mydata2['timestamp'];
-
-                  return timestamp2.compareTo(timestamp);
-                },
+                
+                reverse: true,
+                sort: (a, b) => b.key!.compareTo(a.key!),
                 query: FirebaseDatabase.instance
                     .ref()
                     .child('notifications')
@@ -547,7 +542,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     timestamp = timestamp.replaceFirst("Z", "").split("T").join(" ").toString();
                   } catch (e) {}
 
-                  bool seen = seenIndexes.contains(index) || index >= notificationCount;
+                  bool seen = seenIndexes.contains(index) || (index) >= notificationCount;
                   // print(id);
                   if (searchTerm != "" || searchTerm != null) {
                     if (!id.toString().toLowerCase().contains(searchTerm!.toLowerCase())) {
