@@ -619,7 +619,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   startTimer() {
-    _timer = Timer(Duration(minutes: 30), () async {
+    _timer = Timer(Duration(minutes: 28), () async {
       // print(token);
       String refreshToken = await RefreshToken().refreshToken(token.toString());
       // print(refreshToken);
