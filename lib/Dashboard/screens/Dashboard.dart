@@ -41,6 +41,7 @@ class _DashBoardState extends State<DashBoard> {
 
   var ref = FirebaseDatabase.instance.ref().child("notifications");
   var sub1;
+  // var sub2;
 
   @override
   void initState() {
@@ -54,13 +55,20 @@ class _DashBoardState extends State<DashBoard> {
   void dispose() {
     super.dispose();
     sub1.cancel();
+    // sub2.cancel();
     _timer.cancel();
   }
 
   setListener() async {
-    await ref.once().then((value) {
-      isInitialDataLoaded = true;
-    });
+    if (!isInitialDataLoaded) {
+      ref.limitToLast(1).once().then((value) {
+        isInitialDataLoaded = true;
+      });
+    } else {
+      ref.once().then((value) {
+        isInitialDataLoaded = true;
+      });
+    }
 
     sub1 = ref.limitToLast(1).onChildAdded.listen((event) {
       // print(event.snapshot.value.toString());
