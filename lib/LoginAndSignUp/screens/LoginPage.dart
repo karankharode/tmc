@@ -350,11 +350,11 @@ class _LoginPageState extends State<LoginPage> {
       }
     } else {
       Navigator.pop(context);
-      if (username.isEmpty && password.length < 3) {
+      if (username.length <= 4 && password.length <= 3) {
         showCustomAlert('Alert - Invalid Credentials', "Invalid Username and Password!");
-      } else if (username.isEmpty) {
+      } else if (username.length <= 4) {
         showCustomAlert('Alert - Invalid Credentials', "Invalid Username!");
-      } else if (password.length < 3) {
+      } else if (password.length <= 3) {
         showCustomAlert('Alert - Invalid Credentials', "Invalid Password!");
       }
       // showCustomFlushBar(context, "Enter Valid Username/Password !", 2);
@@ -417,7 +417,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               child: TextFormField(
                                 validator: (val) {
-                                  return val!.isNotEmpty ? null : "";
+                                  return !(val!.length <= 4) ? null : "";
                                 },
                                 onChanged: (value) => username = value,
                                 cursorColor: Colors.grey,
@@ -448,7 +448,7 @@ class _LoginPageState extends State<LoginPage> {
                                   if (val != null) {
                                     if (val.isEmpty) {
                                       return "";
-                                    } else if (val.length < 3) {
+                                    } else if (val.length <= 3) {
                                       return "";
                                     } else {
                                       return null;

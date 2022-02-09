@@ -805,6 +805,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   showSessionExpiredAlert() {
+    print("Session Expiry trigger error message");
     Navigator.of(context).pushAndRemoveUntil(
         PageRouteBuilder(pageBuilder: (_, __, ___) => new LoginPage()), (route) => false);
     showGeneralDialog(

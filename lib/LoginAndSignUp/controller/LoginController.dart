@@ -109,6 +109,7 @@ class LoginController {
         result = "Username already Exists !";
       }
       print(result);
+      print("Request Status Code : ${response.statusCode}}");
 
       return result;
     } on DioError catch (exception) {
