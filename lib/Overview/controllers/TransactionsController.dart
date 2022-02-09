@@ -24,6 +24,8 @@ class ItemListController {
 
     endPointUrl = endPointUrl + extension;
 
+    print("Getting data for endpoint - $endPointUrl \n");
+
     try {
       ItemListResponse? serverMsg = await _httpPostRequest(endPointUrl);
       return serverMsg;

@@ -50,7 +50,7 @@ class SharedPref {
 
   Future<bool> removeIsLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.remove(_isLoggedInKey);
+    return prefs.setBool(_isLoggedInKey, false);
   }
 
   Future<bool> removeUser() async {

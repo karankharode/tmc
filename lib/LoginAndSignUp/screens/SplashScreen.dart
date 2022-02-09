@@ -20,13 +20,18 @@ class _SplashScreenState extends State<SplashScreen> {
     final loginController = LoginController();
 
     var defaultPage;
-
+    print("Checking login info...");
     bool isAuthorized = await loginController.isUserAuthorized();
     if (isAuthorized) {
+      print("Login Info Found! Getting saved token...");
       LoginResponse loginResponse = await loginController.getSavedUserDetails();
+
       token = loginResponse.token;
+
+      print("Saved Token : $token}\n");
       defaultPage = DashBoard(loginResponse: loginResponse);
     } else {
+      print("No login info found! Please Enter username and password or register.");
       defaultPage = LoginPage();
     }
     Widget defaultHome = defaultPage;

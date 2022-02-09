@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tmc/LoginAndSignUp/controller/LoginController.dart';
-import 'package:tmc/LoginAndSignUp/screens/LoginPage.dart';
 import 'package:tmc/LoginAndSignUp/screens/SplashScreen.dart';
 
 void main() {
@@ -17,6 +16,7 @@ void main() {
           messagingSenderId: "348686832653",
           appId: "1:348686832653:web:863ab72a483fe312383144",
           measurementId: "G-97Y01Z0SYF"));
+  print("Firebase Initialised\n");
   runApp(MultiProvider(
     providers: [
       Provider<LoginController>(create: (_) => LoginController()),

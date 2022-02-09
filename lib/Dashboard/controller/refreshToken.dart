@@ -32,6 +32,7 @@ class RefreshToken {
 
       return result;
     } on DioError catch (exception) {
+      print(exception.message);
       return exception.response?.data ?? "Error creating Refresh Token";
     }
   }

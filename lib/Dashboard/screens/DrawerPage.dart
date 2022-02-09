@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tmc/Dashboard/widgets/customTile.dart';
+import 'package:tmc/LoginAndSignUp/controller/LoginController.dart';
 import 'package:tmc/LoginAndSignUp/screens/LoginPage.dart';
 import 'package:tmc/constants/colors.dart';
 
@@ -62,20 +63,26 @@ class _DrawerpageState extends State<Drawerpage> {
                     ),
                     SizedBox(width: 20),
                     Container(
-                      height: 32,
-                      width: 32,
+                      // height: 34,
+                      // width: 34,
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               image: AssetImage(
-                        'assets/images/red_bell.png',
-                      ))),
+                                'assets/images/red_bell.png',
+                              ),
+                              fit: BoxFit.fill)),
                       child: Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(bottom: 4.0),
+                          padding: const EdgeInsets.only(
+                            bottom: 14.0,
+                            left: 12,
+                            right: 12,
+                            top: 8,
+                          ),
                           child: Text(
                             '${widget.notificationCount.toString()}',
                             style: TextStyle(
-                                color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                                color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -88,6 +95,7 @@ class _DrawerpageState extends State<Drawerpage> {
             txt: "Logout",
             current: widget.currentPage == "logout",
             onTap: () {
+              LoginController().logOut();
               Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
             }),
       ],

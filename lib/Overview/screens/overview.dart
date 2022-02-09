@@ -259,8 +259,8 @@ class _OverviewState extends State<Overview> {
     return Stack(
       children: [
         Positioned(
-          left: 4,
-          top: 4,
+          left: 10,
+          top: 10,
           child: Icon(
             Icons.calendar_today_outlined,
             size: 22,
@@ -831,28 +831,34 @@ class _OverviewState extends State<Overview> {
                             child: Container(
                               width: 220,
                               height: 42,
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  enabled: true,
-                                  border: OutlineInputBorder(),
-                                  alignLabelWithHint: true,
-                                  suffixIconConstraints: BoxConstraints(
-                                    minHeight: 26,
-                                    maxHeight: 28,
-                                    minWidth: 26,
-                                    maxWidth: 28,
+                              child: Stack(
+                                children: [
+                                  TextField(
+                                    enabled: false,
+                                    decoration: InputDecoration(
+                                      enabled: false,
+                                      border: OutlineInputBorder(),
+                                      alignLabelWithHint: true,
+                                      suffixIconConstraints: BoxConstraints(
+                                        minHeight: 26,
+                                        maxHeight: 28,
+                                        minWidth: 26,
+                                        maxWidth: 28,
+                                      ),
+                                      contentPadding: EdgeInsets.only(left: 14),
+                                      // suffixIcon: buildCalendarIcon(true),
+                                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                                      hintText: startDateSelected
+                                          ? (selectedDate.year.toString() +
+                                              "-" +
+                                              selectedDate.month.toString() +
+                                              "-" +
+                                              selectedDate.day.toString())
+                                          : "Start Date",
+                                    ),
                                   ),
-                                  contentPadding: EdgeInsets.only(left: 14),
-                                  suffixIcon: buildCalendarIcon(true),
-                                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                                  hintText: startDateSelected
-                                      ? (selectedDate.year.toString() +
-                                          "-" +
-                                          selectedDate.month.toString() +
-                                          "-" +
-                                          selectedDate.day.toString())
-                                      : "Start Date",
-                                ),
+                                  Positioned(right: 0, child: buildCalendarIcon(true))
+                                ],
                               ),
                             ),
                           ),
@@ -888,10 +894,27 @@ class _OverviewState extends State<Overview> {
                                       );
                                       // searchTransaction(searchTerm);
                                     },
-                                    icon: Icon(
-                                      Icons.search,
+                                    icon: Container(
                                       color: Colors.black,
-                                      size: 18,
+                                      padding: EdgeInsets.all(3),
+                                      child: Stack(
+                                        children: [
+                                          Positioned(
+                                            left: 1.5,
+                                            top: 1.5,
+                                            child: Icon(
+                                              Icons.search,
+                                              color: Colors.white70,
+                                              size: 18,
+                                            ),
+                                          ),
+                                          Icon(
+                                            Icons.search,
+                                            color: Colors.white,
+                                            size: 18,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -905,6 +928,19 @@ class _OverviewState extends State<Overview> {
                                     // searchTransaction('');
                                   }
                                 },
+                                onEditingComplete: () {
+                                  getData(
+                                    1,
+                                    5,
+                                    keyword: searchTerm!,
+                                    source_service:
+                                        _chosenValue!.toLowerCase() != "All Services".toLowerCase()
+                                            ? _chosenValue ?? ""
+                                            : "",
+                                    start_date: startDateSelected ? selectedDate.toString() : "",
+                                    end_Date: endDateSelected ? endDate.toString() : "",
+                                  );
+                                },
                               ),
                             ),
                           ),
@@ -913,28 +949,35 @@ class _OverviewState extends State<Overview> {
                             child: Container(
                               width: 220,
                               height: 42,
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  enabled: true,
-                                  border: OutlineInputBorder(),
-                                  alignLabelWithHint: true,
-                                  suffixIconConstraints: BoxConstraints(
-                                    minHeight: 26,
-                                    maxHeight: 28,
-                                    minWidth: 26,
-                                    maxWidth: 28,
+                              child: Stack(
+                                children: [
+                                  TextField(
+                                    enabled: false,
+                                    decoration: InputDecoration(
+                                      enabled: true,
+
+                                      border: OutlineInputBorder(),
+                                      alignLabelWithHint: true,
+                                      suffixIconConstraints: BoxConstraints(
+                                        minHeight: 26,
+                                        maxHeight: 28,
+                                        minWidth: 26,
+                                        maxWidth: 28,
+                                      ),
+                                      contentPadding: EdgeInsets.only(left: 14),
+                                      // suffixIcon: buildCalendarIcon(false),
+                                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                                      hintText: endDateSelected
+                                          ? (endDate.year.toString() +
+                                              "-" +
+                                              endDate.month.toString() +
+                                              "-" +
+                                              endDate.day.toString())
+                                          : "End Date",
+                                    ),
                                   ),
-                                  contentPadding: EdgeInsets.only(left: 14),
-                                  suffixIcon: buildCalendarIcon(false),
-                                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                                  hintText: endDateSelected
-                                      ? (endDate.year.toString() +
-                                          "-" +
-                                          endDate.month.toString() +
-                                          "-" +
-                                          endDate.day.toString())
-                                      : "End Date",
-                                ),
+                                  Positioned(right: 0, child: buildCalendarIcon(false))
+                                ],
                               ),
                             ),
                           ),
@@ -1020,6 +1063,13 @@ class _OverviewState extends State<Overview> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           mainAxisSize: MainAxisSize.max,
                           children: [
+                            Text(
+                              "Page ${itemListResponse?.page ?? 1}",
+                              style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w500),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
                             IconButton(
                                 onPressed: () {
                                   if (itemListResponse!.hasPrevPage) {

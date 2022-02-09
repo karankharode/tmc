@@ -65,8 +65,8 @@ class LoginController {
         data: {"username": username, "password": password},
       );
 
-      print(response.statusCode);
-      print(response.data);
+      print("Request Status Code : ${response.statusCode}\n");
+      print("Request Data : ${response.data}\n");
 
       if (response.statusCode == 200) {
         loginResponse = LoginResponse.getLoginResponseFromHttpResponse(response);
@@ -76,12 +76,12 @@ class LoginController {
 
       return loginResponse;
     } on DioError catch (exception) {
-      if(exception.error.toString() == "XMLHttpRequest error."){
-      return LoginResponse(
-          token: "no internet",
-          responseText: "Sorry we could not log you in. Please try again.");
-
-      };
+      print(exception.message.toString());
+      if (exception.error.toString() == "XMLHttpRequest error.") {
+        return LoginResponse(
+            token: "no internet", responseText: "Sorry we could not log you in. Please try again.");
+      }
+      ;
       return LoginResponse(
           token: "null",
           responseText: exception.response?.data ?? "Error in getting data from server");
@@ -108,14 +108,18 @@ class LoginController {
       } else if (response.data['status'] == "Username already Exists !") {
         result = "Username already Exists !";
       }
+      print(result);
 
       return result;
     } on DioError catch (exception) {
+      print(exception.error.toString());
+      print(exception.message.toString());
       return exception.response?.data ?? "Error in getting data from server";
     }
   }
 
   Future<bool> logOut() {
+    print("Logging Out...\n");
     _sharedPref.removeUser();
     return _sharedPref.removeIsLoggedIn();
   }

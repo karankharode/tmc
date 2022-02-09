@@ -12,7 +12,7 @@ class UpdateController {
       ItemResponse? serverMsg = await _httpPostRequest(endPointUrl);
       return serverMsg;
     } catch (e) {
-      // print(e);
+      print(e);
       return null;
     }
   }
@@ -23,7 +23,7 @@ class UpdateController {
       bool serverMsg = await _httpPostRequestForUpdate(endPointUrl, id, status);
       return serverMsg;
     } catch (e) {
-      // print(e);
+      print(e);
       return false;
     }
   }
@@ -42,6 +42,7 @@ class UpdateController {
       response = await dio.get(url);
 
       if (response.statusCode == 200) {
+        print("Response data for item : ${response.data}\n");
         itemResponse = ItemResponse.getItemResponseFromHttpResponse(response);
         return itemResponse;
       }
@@ -65,7 +66,6 @@ class UpdateController {
               amount: -1,
               status: "status",
               v: -1));
-      
     }
   }
 
@@ -86,11 +86,13 @@ class UpdateController {
       response = await dio.patch(url, data: {"id": id, "status": status});
 
       if (response.statusCode == 200) {
+        print("Status Updated : ${response.data}\n");
         itemResponse = response.data;
         return itemResponse;
       }
       return false;
     } on DioError catch (exception) {
+       print("Status Updated : false\n");
       print(exception.error.toString());
       return exception.response?.data;
     }
