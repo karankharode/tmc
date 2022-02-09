@@ -875,9 +875,9 @@ class _OverviewState extends State<Overview> {
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
                                   alignLabelWithHint: true,
-                                  contentPadding: EdgeInsets.zero,
+                                  contentPadding: EdgeInsets.only(left: 7),
                                   hintStyle: TextStyle(overflow: TextOverflow.clip),
-                                  prefixIcon: IconButton(
+                                  suffixIcon: IconButton(
                                     onPressed: () {
                                       // print("Prefix pressed");
                                       getData(

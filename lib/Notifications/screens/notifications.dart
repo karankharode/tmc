@@ -601,15 +601,32 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       alignLabelWithHint: true,
-                      contentPadding: EdgeInsets.zero,
-                      prefixIcon: IconButton(
+                      contentPadding: EdgeInsets.only(left: 7),
+                      suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {});
                         },
-                        icon: Icon(
-                          Icons.search,
+                        icon: Container(
                           color: Colors.black,
-                          size: 18,
+                          padding: EdgeInsets.all(3),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                left: 1.5,
+                                top: 1.5,
+                                child: Icon(
+                                  Icons.search,
+                                  color: Colors.white70,
+                                  size: 18,
+                                ),
+                              ),
+                              Icon(
+                                Icons.search,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -628,25 +645,35 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 Container(
                   width: 200,
                   height: 42,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      enabled: true,
-                      border: OutlineInputBorder(),
-                      alignLabelWithHint: true,
-                      contentPadding: EdgeInsets.only(left: 16),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          _selectDate(context);
-                        },
-                        icon: Icon(
-                          Icons.calendar_today,
-                          color: Colors.black,
-                          size: 28,
+                  child: Stack(
+                    children: [
+                      TextField(
+                        enabled: false,
+                        decoration: InputDecoration(
+                          enabled: true,
+
+                          border: OutlineInputBorder(),
+                          alignLabelWithHint: true,
+                          contentPadding: EdgeInsets.only(left: 16),
+                          // suffixIcon:
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          hintText: dateSelected ? selectedDate.toString() : "Select Date",
                         ),
                       ),
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      hintText: dateSelected ? selectedDate.toString() : "Select Date",
-                    ),
+                      Positioned(
+                        right: 0,
+                        child: IconButton(
+                          onPressed: () {
+                            _selectDate(context);
+                          },
+                          icon: Icon(
+                            Icons.calendar_today,
+                            color: Colors.black,
+                            size: 28,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
