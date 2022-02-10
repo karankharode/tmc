@@ -76,12 +76,13 @@ class LoginController {
 
       return loginResponse;
     } on DioError catch (exception) {
+      print(exception.error.toString());
       print(exception.message.toString());
       if (exception.error.toString() == "XMLHttpRequest error.") {
         return LoginResponse(
             token: "no internet", responseText: "Sorry we could not log you in. Please try again.");
       }
-      ;
+
       return LoginResponse(
           token: "null",
           responseText: exception.response?.data ?? "Error in getting data from server");
@@ -114,7 +115,7 @@ class LoginController {
       return result;
     } on DioError catch (exception) {
       print(exception.error.toString());
-      print(exception.message.toString());
+      // print(exception.message.toString());
       return exception.response?.data ?? "Error in getting data from server";
     }
   }

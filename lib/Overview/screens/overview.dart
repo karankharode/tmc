@@ -85,6 +85,7 @@ class _OverviewState extends State<Overview> {
   }
 
   showCustomAlert(String heading, String text) {
+    print(text);
     showGeneralDialog(
       context: context,
       pageBuilder: (context, anim1, anim2) {

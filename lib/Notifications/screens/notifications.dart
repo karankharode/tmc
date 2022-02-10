@@ -61,6 +61,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   showCustomAlert(String heading, String text) {
+    print(text);
     showGeneralDialog(
       context: context,
       pageBuilder: (context, anim1, anim2) {
@@ -636,7 +637,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     onChanged: (value) {
                       // print(searchTerm);
                       searchTerm = value;
-                      setState(() {});
+                      // setState(() {});
                     },
                   ),
                 ),

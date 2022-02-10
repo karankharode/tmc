@@ -130,6 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   showCustomAlert(String heading, String text) {
+    print(text);
     showGeneralDialog(
       context: context,
       pageBuilder: (context, anim1, anim2) {
@@ -243,6 +244,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   doSignUp() async {
     if (password != confirmPassword || username != confirmUsername) {
+      // print("Username or password do not match. Please try again.");
       showCustomAlert(
           "Alert - Invalid Registration!", "Username or password do not match. Please try again.");
     } else {
@@ -267,9 +269,17 @@ class _RegisterPageState extends State<RegisterPage> {
         }
       } else {
         Navigator.pop(context);
+        //  if (username.length <= 4 && password.length <= 3) {
+        //   showCustomAlert('Alert - Invalid Credentials', "Invalid Username and Password!");
+        // } else if (username.length <= 4) {
+        //   showCustomAlert('Alert - Invalid Credentials', "Invalid Username!");
+        // } else if (password.length <= 3) {
+        //   showCustomAlert('Alert - Invalid Credentials', "Invalid Password!");
+        // }
+        // print( "Username and password has to be more than 4 characters & 3 characters respectively. Please try again.");
 
         showCustomAlert("Alert - Invalid Registration!",
-            "Username and password has to be more than 3 characters. Please try again.");
+            "Username and password length must be atleast 4 characters. Please try again.");
       }
     }
   }
@@ -326,7 +336,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               child: TextFormField(
                                 validator: (val) {
-                                  return val!.isNotEmpty ? null : "Please provide valid username";
+                                  return !(val!.length <= 3) ? null : "";
                                 },
                                 onChanged: (value) => username = value,
                                 cursorColor: Colors.grey,
@@ -355,16 +365,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                 validator: (val) {
                                   if (val != null) {
                                     if (val.isEmpty) {
-                                      return "Please enter a valid password";
+                                      return "";
                                     } else if (val.length <= 3) {
-                                      return "Password must contain 3 characters";
+                                      return "";
                                     } else {
                                       return null;
                                     }
-                                    // return RegExp("^(?=.{8,32}\$)(?=.*[a-z])(?=.*[0-9]).*")
-                                    //         .hasMatch(val)
-                                    //     ? null
-                                    //     : "Password must contain a letter, number & symbol";
                                   }
                                 },
                                 onChanged: (value) => password = value,

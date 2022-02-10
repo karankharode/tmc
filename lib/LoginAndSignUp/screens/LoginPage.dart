@@ -174,6 +174,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   showCustomAlert(String heading, String text) {
+    print(text);
     showGeneralDialog(
       context: context,
       pageBuilder: (context, anim1, anim2) {
@@ -350,9 +351,10 @@ class _LoginPageState extends State<LoginPage> {
       }
     } else {
       Navigator.pop(context);
-      if (username.length <= 4 && password.length <= 3) {
+      print("Username and password length must be atleast 4 characters. Please try again.");
+      if (username.length <= 3 && password.length <= 3) {
         showCustomAlert('Alert - Invalid Credentials', "Invalid Username and Password!");
-      } else if (username.length <= 4) {
+      } else if (username.length <= 3) {
         showCustomAlert('Alert - Invalid Credentials', "Invalid Username!");
       } else if (password.length <= 3) {
         showCustomAlert('Alert - Invalid Credentials', "Invalid Password!");
@@ -417,7 +419,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               child: TextFormField(
                                 validator: (val) {
-                                  return !(val!.length <= 4) ? null : "";
+                                  return !(val!.length <= 3) ? null : "";
                                 },
                                 onChanged: (value) => username = value,
                                 cursorColor: Colors.grey,
@@ -453,10 +455,6 @@ class _LoginPageState extends State<LoginPage> {
                                     } else {
                                       return null;
                                     }
-                                    // return RegExp("^(?=.{8,32}\$)(?=.*[a-z])(?=.*[0-9]).*")
-                                    //         .hasMatch(val)
-                                    //     ? null
-                                    //     : "Password must contain a letter, number & symbol";
                                   }
                                 },
                                 onChanged: (value) => password = value,

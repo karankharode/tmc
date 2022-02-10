@@ -23,6 +23,7 @@ class UpdateController {
       bool serverMsg = await _httpPostRequestForUpdate(endPointUrl, id, status);
       return serverMsg;
     } catch (e) {
+      print("Error occured!");
       print(e);
       return false;
     }
@@ -47,6 +48,7 @@ class UpdateController {
         return itemResponse;
       }
     } on DioError catch (exception) {
+      print("Invalid Transaction ID Request");
       print(exception.error.toString());
       if (exception.error.toString() == "XMLHttpRequest error.") {
         return ItemResponse(
@@ -84,6 +86,7 @@ class UpdateController {
       dio.options.headers['accept'] = 'application/json';
       dio.options.headers['Content-Type'] = 'application/json';
       response = await dio.patch(url, data: {"id": id, "status": status});
+      print("Request Status Code : ${response.statusCode}");
 
       if (response.statusCode == 200) {
         print("Status Updated : ${response.data}\n");
@@ -92,7 +95,8 @@ class UpdateController {
       }
       return false;
     } on DioError catch (exception) {
-       print("Status Updated : false\n");
+      print("Invalid Update Request");
+      print("Status Updated : false\n");
       print(exception.error.toString());
       return exception.response?.data;
     }

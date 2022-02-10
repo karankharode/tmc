@@ -30,7 +30,7 @@ class ItemListController {
       ItemListResponse? serverMsg = await _httpPostRequest(endPointUrl);
       return serverMsg;
     } catch (e) {
-      print("caught");
+      print("Error occured!");
       return ItemListResponse(
           totalDocs: -3,
           limit: 0,
@@ -59,12 +59,14 @@ class ItemListController {
       dio.options.headers['auth'] = token.toString();
       dio.options.headers['accept'] = 'application/json';
       response = await dio.get(url);
+      print("Request Status Code : ${response.statusCode}");
 
       if (response.statusCode == 200) {
         itemListResponse = ItemListResponse.getItemListResponseFromHttpResponse(response);
         return itemListResponse;
       }
     } on DioError catch (exception) {
+      print(exception.error.toString());
       if (exception.error.toString() == "XMLHttpRequest error.") {
         return ItemListResponse(
             totalDocs: -1,
