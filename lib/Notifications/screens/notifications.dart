@@ -61,7 +61,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   showCustomAlert(String heading, String text) {
-    print(text+"\n");
+    print(text + "\n");
     showGeneralDialog(
       context: context,
       pageBuilder: (context, anim1, anim2) {
@@ -688,115 +688,119 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 scrollDirection: Axis.vertical,
                 reverse: false,
                 sort: (a, b) => b.key!.compareTo(a.key!),
-                
                 query: FirebaseDatabase.instance
                     .ref()
                     .child('notifications')
                     .orderByChild("timestamps"),
                 itemBuilder: (BuildContext context, DataSnapshot snapshot,
                     Animation<double> animation, int index) {
-                  Map mydata = snapshot.value as Map;
-                  String id = mydata['id'];
-                  String timestamp = mydata['timestamp'];
-                  DateTime transactionDate = DateTime.parse(timestamp);
-
                   try {
-                    timestamp = timestamp.replaceFirst("Z", "").split("T").join(" ").toString();
-                  } catch (e) {}
+                    Map mydata = snapshot.value as Map;
+                    String id = mydata['id'];
+                    String timestamp = mydata['timestamp'];
+                    DateTime transactionDate = DateTime.parse(timestamp);
 
-                  bool seen = seenIndexes.contains(index) || (index) >= notificationCount;
-                  // print(id);
-                  if (searchTerm != "" || searchTerm != null) {
-                    if (!id.toString().toLowerCase().contains(searchTerm!.toLowerCase())) {
-                      return Container();
-                    }
-                  }
-                  if (dateSelected) {
-                    // print("true");
-                    if ("${selectedDate.day.toString()}-${selectedDate.month.toString()}-${selectedDate.year.toString()}" !=
-                        "${transactionDate.day.toString()}-${transactionDate.month.toString()}-${transactionDate.year.toString()}") {
-                      return Container();
-                    }
-                  }
+                    try {
+                      timestamp = timestamp.replaceFirst("Z", "").split("T").join(" ").toString();
+                    } catch (e) {}
 
-                  return Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                        color: index % 2 == 0 ? tableDarkColor : white,
-                        border: Border.symmetric(horizontal: BorderSide(color: grey, width: 0.5))),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            flex: 1,
-                            child: Container(
-                              child: Center(
-                                child: seen
-                                    ? Container(
-                                        height: 7,
-                                      )
-                                    : Container(
-                                        height: 7,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle, color: notifierColor)),
-                              ),
-                            )),
-                        Expanded(
-                            flex: 12,
-                            child: Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text('Alert - Transaction has Failed!',
-                                      style: TextStyle(
-                                        color: seen ? Colors.black87 : notifierColor,
-                                        fontWeight: seen ? FontWeight.w400 : FontWeight.w600,
-                                        fontSize: 13,
-                                      )),
-                                  Row(
-                                    children: [
-                                      Text('Transaction ID $id has been failed.',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                          )),
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            seenIndexes.add(index);
-                                          });
-                                          getData(id.toString());
-                                        },
-                                        child: Text(' View transaction Details...',
+                    bool seen = seenIndexes.contains(index) || (index) >= notificationCount;
+                    // print(id);
+                    if (searchTerm != "" || searchTerm != null) {
+                      if (!id.toString().toLowerCase().contains(searchTerm!.toLowerCase())) {
+                        return Container();
+                      }
+                    }
+                    if (dateSelected) {
+                      // print("true");
+                      if ("${selectedDate.day.toString()}-${selectedDate.month.toString()}-${selectedDate.year.toString()}" !=
+                          "${transactionDate.day.toString()}-${transactionDate.month.toString()}-${transactionDate.year.toString()}") {
+                        return Container();
+                      }
+                    }
+
+                    return Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: index % 2 == 0 ? tableDarkColor : white,
+                          border:
+                              Border.symmetric(horizontal: BorderSide(color: grey, width: 0.5))),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child: Container(
+                                child: Center(
+                                  child: seen
+                                      ? Container(
+                                          height: 7,
+                                        )
+                                      : Container(
+                                          height: 7,
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle, color: notifierColor)),
+                                ),
+                              )),
+                          Expanded(
+                              flex: 12,
+                              child: Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text('Alert - Transaction has Failed!',
+                                        style: TextStyle(
+                                          color: seen ? Colors.black87 : notifierColor,
+                                          fontWeight: seen ? FontWeight.w400 : FontWeight.w600,
+                                          fontSize: 13,
+                                        )),
+                                    Row(
+                                      children: [
+                                        Text('Transaction ID $id has been failed.',
                                             style: TextStyle(
-                                                color: Colors.red,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 12,
-                                                decoration: TextDecoration.underline)),
+                                              fontSize: 12,
+                                            )),
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              seenIndexes.add(index);
+                                            });
+                                            getData(id.toString());
+                                          },
+                                          child: Text(' View transaction Details...',
+                                              style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12,
+                                                  decoration: TextDecoration.underline)),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              )),
+                          Expanded(
+                              flex: 3,
+                              child: Container(
+                                child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 14),
+                                      child: Text(
+                                        timestamp.toString(),
+                                        style: TextStyle(
+                                            color: bgColor,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14),
                                       ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            )),
-                        Expanded(
-                            flex: 3,
-                            child: Container(
-                              child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 14),
-                                    child: Text(
-                                      timestamp.toString(),
-                                      style: TextStyle(
-                                          color: bgColor,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14),
-                                    ),
-                                  )),
-                            )),
-                      ],
-                    ),
-                  );
+                                    )),
+                              )),
+                        ],
+                      ),
+                    );
+                  } catch (e) {
+                    return Container();
+                  }
                 }),
           )
         ],
