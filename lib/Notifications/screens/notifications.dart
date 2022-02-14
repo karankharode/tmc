@@ -694,7 +694,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     .orderByChild("timestamps"),
                 itemBuilder: (BuildContext context, DataSnapshot snapshot,
                     Animation<double> animation, int index) {
-                  try {
+                
                     Map mydata = snapshot.value as Map;
                     String id = mydata['id'];
                     String timestamp = mydata['timestamp'];
@@ -798,9 +798,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         ],
                       ),
                     );
-                  } catch (e) {
-                    return Container();
-                  }
+                  
                 }),
           )
         ],
