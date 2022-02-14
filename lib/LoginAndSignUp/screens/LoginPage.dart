@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
     showCustomAlert("Token", "retriving");
     String token = await FirebaseMessaging.instance.getToken() ?? "";
     Navigator.pop(context);
-    print(token);
+    print(token+"\n");
     showCustomAlert("Token", token);
   }
 
@@ -174,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   showCustomAlert(String heading, String text) {
-    print(text);
+    print(text+"\n");
     showGeneralDialog(
       context: context,
       pageBuilder: (context, anim1, anim2) {
@@ -340,7 +340,7 @@ class _LoginPageState extends State<LoginPage> {
         showCustomAlert('Alert - Invalid Credentials', isAuthorized.responseText);
         // print('Not Logged IN');
       } else {
-        print("Token : ${isAuthorized.token}");
+        print("Token : ${isAuthorized.token}\n");
         setState(() {
           token = isAuthorized.token;
         });
@@ -351,7 +351,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } else {
       Navigator.pop(context);
-      print("Username and password length must be atleast 4 characters. Please try again.");
+      print("Username and password length must be atleast 4 characters. Please try again.\n");
       if (username.length <= 3 && password.length <= 3) {
         showCustomAlert('Alert - Invalid Credentials', "Invalid Username and Password!");
       } else if (username.length <= 3) {

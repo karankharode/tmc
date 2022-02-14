@@ -85,7 +85,7 @@ class _OverviewState extends State<Overview> {
   }
 
   showCustomAlert(String heading, String text) {
-    print(text);
+    print(text + "\n");
     showGeneralDialog(
       context: context,
       pageBuilder: (context, anim1, anim2) {
@@ -880,7 +880,6 @@ class _OverviewState extends State<Overview> {
                                   hintStyle: TextStyle(overflow: TextOverflow.clip),
                                   suffixIcon: IconButton(
                                     onPressed: () {
-                                      // print("Prefix pressed");
                                       getData(
                                         1,
                                         5,
@@ -923,7 +922,6 @@ class _OverviewState extends State<Overview> {
                                   hintText: 'Search Transactions',
                                 ),
                                 onChanged: (value) {
-                                  // print(searchTerm);
                                   searchTerm = value;
                                   if (value.isEmpty) {
                                     // searchTransaction('');

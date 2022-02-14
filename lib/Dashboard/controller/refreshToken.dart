@@ -27,13 +27,13 @@ class RefreshToken {
 
       if (response.data['status'] == "Refresh Token created") {
         result = response.data["auth"].toString();
-        print("Token refreshed : ${response.data['auth']}");
+        print("Token refreshed : ${response.data['auth']}\n");
       }
 
       return result;
     } on DioError catch (exception) {
-      print(exception.error.toString());
-      return exception.response?.data ?? "Error creating Refresh Token";
+      print(exception.error.toString()+"\n");
+      return exception.response?.data ?? "Error creating Refresh Token\n";
     }
   }
 }

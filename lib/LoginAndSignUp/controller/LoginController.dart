@@ -42,7 +42,7 @@ class LoginController {
       );
       return serverMsg;
     } catch (e) {
-      debugPrint(e.toString());
+
       return LoginResponse(token: 'null', responseText: "Error in getting data from server");
     }
   }
@@ -76,8 +76,7 @@ class LoginController {
 
       return loginResponse;
     } on DioError catch (exception) {
-      print(exception.error.toString());
-      print(exception.message.toString());
+      print(exception.error.toString()+"\n");
       if (exception.error.toString() == "XMLHttpRequest error.") {
         return LoginResponse(
             token: "no internet", responseText: "Sorry we could not log you in. Please try again.");
@@ -109,14 +108,14 @@ class LoginController {
       } else if (response.data['status'] == "Username already Exists !") {
         result = "Username already Exists !";
       }
-      print(result);
-      print("Request Status Code : ${response.statusCode}}");
+      print(result+"\n");
+      print("Request Status Code : ${response.statusCode}}\n");
 
       return result;
     } on DioError catch (exception) {
-      print(exception.error.toString());
+      print(exception.error.toString()+"\n");
       // print(exception.message.toString());
-      return exception.response?.data ?? "Error in getting data from server";
+      return exception.response?.data ?? "Error in getting data from server\n";
     }
   }
 

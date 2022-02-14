@@ -130,7 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   showCustomAlert(String heading, String text) {
-    print(text);
+    print(text+"\n");
     showGeneralDialog(
       context: context,
       pageBuilder: (context, anim1, anim2) {
@@ -269,15 +269,6 @@ class _RegisterPageState extends State<RegisterPage> {
         }
       } else {
         Navigator.pop(context);
-        //  if (username.length <= 4 && password.length <= 3) {
-        //   showCustomAlert('Alert - Invalid Credentials', "Invalid Username and Password!");
-        // } else if (username.length <= 4) {
-        //   showCustomAlert('Alert - Invalid Credentials', "Invalid Username!");
-        // } else if (password.length <= 3) {
-        //   showCustomAlert('Alert - Invalid Credentials', "Invalid Password!");
-        // }
-        // print( "Username and password has to be more than 4 characters & 3 characters respectively. Please try again.");
-
         showCustomAlert("Alert - Invalid Registration!",
             "Username and password length must be atleast 4 characters. Please try again.");
       }

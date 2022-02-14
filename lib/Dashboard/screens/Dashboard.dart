@@ -254,7 +254,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   showCustomErrorAlert(String heading, String text) {
-    print(text);
+    print(text + "\n");
     showGeneralDialog(
       context: context,
       pageBuilder: (context, anim1, anim2) {
@@ -790,8 +790,8 @@ class _DashBoardState extends State<DashBoard> {
         Navigator.of(context).pushAndRemoveUntil(
             PageRouteBuilder(pageBuilder: (_, __, ___) => new LoginPage()), (route) => false);
         showSessionExpiredAlert();
-        print("Ranu your session has timed out...refreshing!");
-        print('Not Logged IN');
+        print("Ranu your session has timed out...refreshing!\n");
+        print('Not Logged IN\n');
       }
     });
   }
@@ -806,7 +806,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   showSessionExpiredAlert() {
-    print("Session Expiry trigger error message");
+    print("Session Expiry trigger error message\n");
     Navigator.of(context).pushAndRemoveUntil(
         PageRouteBuilder(pageBuilder: (_, __, ___) => new LoginPage()), (route) => false);
     showGeneralDialog(

@@ -61,7 +61,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   showCustomAlert(String heading, String text) {
-    print(text);
+    print(text+"\n");
     showGeneralDialog(
       context: context,
       pageBuilder: (context, anim1, anim2) {
@@ -688,6 +688,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 scrollDirection: Axis.vertical,
                 reverse: false,
                 sort: (a, b) => b.key!.compareTo(a.key!),
+                
                 query: FirebaseDatabase.instance
                     .ref()
                     .child('notifications')
